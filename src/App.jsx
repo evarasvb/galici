@@ -51,21 +51,32 @@ import {
   Database,
   Wallet,
   RefreshCw,
-  Layers // Icono para Software/Solution
+  Layers,
+  Search as SearchIcon
 } from 'lucide-react';
 
-// --- Logo Galici Corporate (Azul Institucional) ---
+// --- Logo Galici "G+A Fusion" (Vector Oficial) ---
 const GaliciLogo = ({ className = "w-8 h-8", color = "#1e40af" }) => (
   <svg 
-    viewBox="0 0 200 120" 
+    viewBox="0 0 300 160" 
     className={className} 
     fill="none" 
     xmlns="http://www.w3.org/2000/svg"
   >
+    {/* Trazo 1: La estructura ascendente de la 'A' (Pico Afilado) */}
     <path 
-      d="M20 90 C 50 80, 80 40, 100 10 L 120 110 M 10 70 C 60 50, 140 50, 190 80" 
+      d="M 60 130 L 160 20 L 150 130" 
       stroke={color} 
-      strokeWidth="12" 
+      strokeWidth="14" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+    
+    {/* Trazo 2: El arco envolvente 'G' que cruza dinámicamente */}
+    <path 
+      d="M 20 110 C 100 60, 240 60, 280 110" 
+      stroke={color} 
+      strokeWidth="14" 
       strokeLinecap="round" 
       strokeLinejoin="round"
     />
@@ -195,9 +206,16 @@ export default function App() {
             <div className="hidden md:flex items-center gap-8">
               <a href="#logic" className="text-sm font-medium text-gray-600 hover:text-blue-800 transition-colors">Solución</a>
               <a href="#features" className="text-sm font-medium text-gray-600 hover:text-blue-800 transition-colors">Motor</a>
-              <a href="#results" className="text-sm font-medium text-gray-600 hover:text-blue-800 transition-colors">Última Línea</a>
               <div className="h-6 w-px bg-gray-300 mx-2"></div>
-              <a href="#" className="text-sm font-bold text-blue-800 hover:underline">Acceso Clientes</a>
+              
+              {/* Botón de usuario gratuito */}
+              <button 
+                onClick={() => setCurrentView('freeSignup')}
+                className="text-sm font-medium text-gray-500 hover:text-blue-800 transition-colors"
+              >
+                Buscador Gratuito
+              </button>
+
               <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="py-2.5">
                 Actualizar Motor
               </Button>
@@ -247,9 +265,12 @@ export default function App() {
               <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="text-lg px-8 h-14 w-full sm:w-auto">
                 ACTUALIZA TU MOTOR <Rocket className="w-5 h-5 ml-1" />
               </Button>
+              <Button onClick={() => setCurrentView('freeSignup')} variant="secondary" className="text-lg px-8 h-14 w-full sm:w-auto border-blue-100 bg-blue-50 text-blue-800">
+                Solo Buscar (Gratis)
+              </Button>
             </div>
             <p className="text-xs text-gray-500 mt-4 text-center lg:text-left font-medium">
-              * Comisión por éxito solo el primer mes. Sin letra chica.
+              * Motor Galici: Comisión por éxito solo el primer mes.
             </p>
           </div>
 
@@ -533,10 +554,176 @@ export default function App() {
     </div>
   );
 
+  const FreeSignup = () => (
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute top-6 left-6 cursor-pointer" onClick={() => setCurrentView('landing')}>
+           <div className="flex items-center gap-2">
+             <div className="bg-blue-50 p-1.5 rounded border border-blue-100">
+                <GaliciLogo className="w-6 h-6 text-blue-800" />
+             </div>
+             <span className="font-bold text-gray-800">GALICI</span>
+           </div>
+        </div>
+        <Card className="p-10 max-w-md w-full text-center relative z-10 shadow-lg border-gray-200 bg-white">
+            <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <SearchIcon className="w-6 h-6 text-gray-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Buscador Gratuito</h2>
+            <p className="text-gray-500 mb-8 text-xs">Crea una cuenta para buscar licitaciones sin las herramientas de inteligencia.</p>
+            <div className="space-y-3 text-left">
+               <div>
+                 <label className="block text-xs font-bold text-gray-700 mb-1">Email</label>
+                 <input type="email" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="tu@empresa.com" />
+               </div>
+               <div>
+                 <label className="block text-xs font-bold text-gray-700 mb-1">Contraseña</label>
+                 <input type="password" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" />
+               </div>
+               <div className="pt-4">
+                 <Button onClick={() => setCurrentView('search')} variant="secondary" className="w-full bg-gray-800 text-white hover:bg-gray-700 border-transparent">Crear Cuenta Gratuita</Button>
+               </div>
+            </div>
+            <div className="mt-6 border-t border-gray-100 pt-4">
+              <p className="text-xs text-gray-400">¿Buscas resultados reales? <span className="text-blue-600 font-bold cursor-pointer hover:underline" onClick={() => setCurrentView('onboarding')}>Activa el Motor</span></p>
+            </div>
+        </Card>
+    </div>
+  );
+
+  const SearchEngine = () => (
+    <div className="min-h-screen bg-gray-50 font-sans flex flex-col">
+      {/* Header Search */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+           <div className="flex items-center gap-8 w-full">
+             <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentView('landing')}>
+                <GaliciLogo className="w-6 h-6 text-blue-800" />
+             </div>
+             <div className="flex-1 max-w-2xl relative">
+                <input 
+                  type="text" 
+                  placeholder="Buscar licitaciones (Ej: Computadores, Aseo, Construcción...)" 
+                  className="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                />
+                <SearchIcon className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+             </div>
+           </div>
+           <div className="flex items-center gap-4">
+             <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="py-1.5 text-xs h-8 px-4">
+               Desbloquear Inteligencia <Lock className="w-3 h-3 ml-1" />
+             </Button>
+             <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold text-xs">
+               TU
+             </div>
+           </div>
+        </div>
+      </div>
+
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 py-8 grid grid-cols-12 gap-8">
+        {/* Sidebar Filters */}
+        <div className="col-span-3 space-y-6">
+           <div>
+             <h3 className="text-xs font-bold text-gray-900 uppercase mb-3 flex items-center gap-2"><Filter className="w-3 h-3"/> Filtros</h3>
+             <div className="space-y-2">
+               {['Región Metropolitana', 'Valparaíso', 'Biobío', 'Antofagasta'].map(r => (
+                 <label key={r} className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
+                   <input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500" /> {r}
+                 </label>
+               ))}
+             </div>
+           </div>
+           <div className="border-t border-gray-200 pt-6">
+             <h3 className="text-xs font-bold text-gray-900 uppercase mb-3">Rubro</h3>
+             <div className="space-y-2">
+               {['Tecnología', 'Mobiliario', 'Aseo', 'Construcción'].map(r => (
+                 <label key={r} className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
+                   <input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500" /> {r}
+                 </label>
+               ))}
+             </div>
+           </div>
+           
+           {/* Premium Filter Teaser */}
+           <div className="bg-gray-100 rounded-lg p-4 border border-gray-200 opacity-70 relative overflow-hidden">
+              <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] flex items-center justify-center z-10">
+                <Lock className="w-5 h-5 text-gray-400" />
+              </div>
+              <h3 className="text-xs font-bold text-gray-400 uppercase mb-2">Filtro de Riesgo</h3>
+              <div className="h-2 bg-gray-200 rounded mb-2 w-3/4"></div>
+              <div className="h-2 bg-gray-200 rounded w-1/2"></div>
+           </div>
+        </div>
+
+        {/* Results */}
+        <div className="col-span-9 space-y-4">
+           {/* Result Card 1 */}
+           <Card className="p-5 flex justify-between items-start hover:border-blue-300 transition-colors group">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Compra Ágil</span>
+                  <span className="text-gray-400 text-xs">ID: 4561-23-LQ24</span>
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-700">Adquisición de Equipamiento Informático</h3>
+                <div className="text-sm text-gray-600 mb-4 flex items-center gap-4">
+                  <span className="flex items-center gap-1"><Building2 className="w-3 h-3"/> Servicio de Salud Metropolitano</span>
+                  <span className="flex items-center gap-1"><Clock className="w-3 h-3"/> Cierra en 2 días</span>
+                </div>
+              </div>
+              <div className="flex flex-col items-end gap-2">
+                 <div className="text-xl font-bold text-gray-900">$4.500.000</div>
+                 <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+                   Ver en Mercado Público <ArrowRight className="w-3 h-3" />
+                 </button>
+              </div>
+           </Card>
+
+           {/* Result Card 2 */}
+           <Card className="p-5 flex justify-between items-start hover:border-blue-300 transition-colors group">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">L1</span>
+                  <span className="text-gray-400 text-xs">ID: 2210-55-LE24</span>
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-700">Servicio de Mantención de Mobiliario</h3>
+                <div className="text-sm text-gray-600 mb-4 flex items-center gap-4">
+                  <span className="flex items-center gap-1"><Building2 className="w-3 h-3"/> Municipalidad de Providencia</span>
+                  <span className="flex items-center gap-1"><Clock className="w-3 h-3"/> Cierra en 5 días</span>
+                </div>
+              </div>
+              <div className="flex flex-col items-end gap-2">
+                 <div className="text-xl font-bold text-gray-900">$12.000.000</div>
+                 <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+                   Ver en Mercado Público <ArrowRight className="w-3 h-3" />
+                 </button>
+              </div>
+           </Card>
+
+           {/* Locked Feature Teaser in Results */}
+           <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                 <div className="bg-blue-100 p-3 rounded-full">
+                   <ShieldCheck className="w-6 h-6 text-blue-600" />
+                 </div>
+                 <div>
+                   <h4 className="font-bold text-blue-900">Análisis de Riesgo Bloqueado</h4>
+                   <p className="text-sm text-blue-700">Estás viendo resultados sin el filtro de "Buenos Pagadores".</p>
+                 </div>
+              </div>
+              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="text-xs">
+                Ver Análisis Premium
+              </Button>
+           </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
       {currentView === 'landing' && <LandingPage />}
       {currentView === 'onboarding' && <OnboardingWizard />}
+      {currentView === 'freeSignup' && <FreeSignup />}
+      {currentView === 'search' && <SearchEngine />}
     </>
   );
 }
