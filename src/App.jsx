@@ -4,43 +4,66 @@ import {
   FileText, 
   CheckCircle, 
   ArrowRight, 
-  Search as SearchIcon, 
+  Search, 
+  Briefcase, 
   ShieldCheck, 
-  ChevronDown,
+  Users, 
+  ChevronRight, 
+  ChevronLeft,
+  UploadCloud,
   Menu,
   X,
   Zap,
   Cpu,
+  AlertTriangle,
   Activity,
-  Layers,
-  TrendingUp,
-  Rocket,
+  BarChart3,
   Lock,
-  MessageSquare,
-  Database,
-  Wallet,
-  Crosshair,
-  Filter,
+  Globe,
+  Mail,
+  Phone,
+  Linkedin,
+  Twitter,
+  Facebook,
+  TrendingUp,
   Clock,
+  DollarSign,
   Package,
+  Monitor,
+  Wrench,
+  Lightbulb,
+  Home,
+  ShoppingBag,
+  Filter,
+  Eye,
+  Edit3,
   Armchair,      
   Utensils,      
   Stethoscope,   
   Sparkles,      
   Laptop,        
+  Printer,
+  Rocket,
+  HelpCircle,
+  ChevronDown,
+  MessageSquare,
+  Crosshair,
+  Database,
+  Wallet,
+  RefreshCw,
+  Layers,
+  Search as SearchIcon,
+  BrainCircuit // Icono para IA Generativa
 } from 'lucide-react';
 
 // --- Nuevo Logo Galici "Simple & Social" (Tipo App) ---
-const GaliciLogo = ({ className = "w-8 h-8", color = "#1e40af", ariaLabel = 'Galici logo' }) => (
+const GaliciLogo = ({ className = "w-8 h-8", color = "#1e40af" }) => (
   <svg 
-    role="img"
-    aria-label={ariaLabel}
     viewBox="0 0 100 100" 
     className={className} 
     fill="none" 
     xmlns="http://www.w3.org/2000/svg"
   >
-    <title>{ariaLabel}</title>
     {/* Fondo Circular Sólido */}
     <circle cx="50" cy="50" r="50" fill={color} />
     
@@ -54,7 +77,7 @@ const GaliciLogo = ({ className = "w-8 h-8", color = "#1e40af", ariaLabel = 'Gal
 
 // --- Componentes UI Clásicos (Clean Corporate) ---
 
-const Button = ({ children, onClick, variant = 'primary', className = '', type = 'button', disabled = false, ariaLabel }) => {
+const Button = ({ children, onClick, variant = 'primary', className = '', type = 'button', disabled = false }) => {
   const baseStyle = "px-6 py-3 rounded-md font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 text-sm shadow-sm";
   
   const variants = {
@@ -71,7 +94,6 @@ const Button = ({ children, onClick, variant = 'primary', className = '', type =
       type={type}
       onClick={onClick} 
       disabled={disabled}
-      aria-label={ariaLabel}
       className={`${baseStyle} ${variants[variant]} ${className}`}
     >
       {children}
@@ -120,7 +142,6 @@ const FAQItem = ({ question, answer }) => {
       <button 
         className="w-full py-5 flex justify-between items-center text-left focus:outline-none group hover:bg-gray-50 px-2 rounded-lg transition-colors"
         onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
       >
         <span className={`text-sm font-bold transition-colors ${isOpen ? 'text-blue-700' : 'text-gray-700'}`}>
           {question}
@@ -156,12 +177,6 @@ export default function App() {
   const [currentView, setCurrentView] = useState('landing');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Controlled inputs state
-  const [onboardEmail, setOnboardEmail] = useState('');
-  const [signupEmail, setSignupEmail] = useState('');
-  const [signupPassword, setSignupPassword] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-
   useEffect(() => { window.scrollTo(0, 0); }, [currentView]);
 
   // --- Vistas ---
@@ -188,16 +203,15 @@ export default function App() {
               <button 
                 onClick={() => setCurrentView('freeSignup')}
                 className="text-sm font-medium text-gray-500 hover:text-blue-800 transition-colors"
-                aria-label="Buscador Gratuito"
               >
                 Buscador Gratuito
               </button>
-              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="py-2.5" ariaLabel="Tomar el Control">
+              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="py-2.5">
                 Tomar el Control
               </Button>
             </div>
 
-            <button className="md:hidden text-gray-600" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}>
+            <button className="md:hidden text-gray-600" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               {mobileMenuOpen ? <X /> : <Menu />}
             </button>
           </div>
@@ -238,10 +252,10 @@ export default function App() {
             </ul>
             
             <div className="flex flex-col sm:flex-row gap-4 pt-6 justify-center lg:justify-start">
-              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="text-lg px-8 h-14 w-full sm:w-auto" ariaLabel="Actualizar motor">
+              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="text-lg px-8 h-14 w-full sm:w-auto">
                 ACTUALIZA TU MOTOR <Rocket className="w-5 h-5 ml-1" />
               </Button>
-              <Button onClick={() => setCurrentView('freeSignup')} variant="secondary" className="text-lg px-8 h-14 w-full sm:w-auto border-blue-100 bg-blue-50 text-blue-800" ariaLabel="Buscador gratis">
+              <Button onClick={() => setCurrentView('freeSignup')} variant="secondary" className="text-lg px-8 h-14 w-full sm:w-auto border-blue-100 bg-blue-50 text-blue-800">
                 Solo Buscar (Gratis)
               </Button>
             </div>
@@ -286,7 +300,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8 relative z-10">
           <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
             <div className="bg-blue-50 w-14 h-14 rounded-lg flex items-center justify-center mb-6 group-hover:bg-blue-100 transition-colors">
-              <Cpu className="w-7 h-7 text-blue-600" />
+              <BrainCircuit className="w-7 h-7 text-blue-600" />
             </div>
             <h3 className="text-lg font-bold text-gray-900 mb-2">IA Generativa Escalable</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
@@ -370,8 +384,8 @@ export default function App() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-16">
-            {PRODUCT_CATEGORIES.map((cat) => (
-              <div key={cat.name} className="flex flex-col items-center p-6 bg-white border border-gray-200 rounded-xl hover:border-blue-400 hover:shadow-md transition-all duration-200 cursor-default group">
+            {PRODUCT_CATEGORIES.map((cat, i) => (
+              <div key={i} className="flex flex-col items-center p-6 bg-white border border-gray-200 rounded-xl hover:border-blue-400 hover:shadow-md transition-all duration-200 cursor-default group">
                  <cat.icon className="w-8 h-8 text-blue-700 mb-4 group-hover:scale-110 transition-transform" />
                  <span className="text-xs font-bold text-gray-600 text-center uppercase tracking-wide group-hover:text-blue-900">{cat.name}</span>
               </div>
@@ -457,7 +471,7 @@ export default function App() {
             Deja que la IA haga el trabajo pesado. Tú ocúpate de la estrategia y de cobrar a tiempo.
           </p>
           
-          <Button onClick={() => setCurrentView('onboarding')} variant="white" className="text-lg px-12 h-16 w-full sm:w-auto font-bold text-blue-900 hover:bg-blue-50" ariaLabel="Activar Motor Ahora">
+          <Button onClick={() => setCurrentView('onboarding')} variant="white" className="text-lg px-12 h-16 w-full sm:w-auto font-bold text-blue-900 hover:bg-blue-50">
             Activar Motor Ahora
           </Button>
           
@@ -523,9 +537,8 @@ export default function App() {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Activar Motor</h2>
             <p className="text-gray-600 mb-8 text-sm">Déjanos tus coordenadas. Un agente de inteligencia se pondrá en contacto para configurar tu motor Galici.</p>
             <div className="space-y-3">
-               <label htmlFor="onboard-email" className="sr-only">Email Corporativo</label>
-               <input id="onboard-email" value={onboardEmail} onChange={e => setOnboardEmail(e.target.value)} type="text" placeholder="Email Corporativo" className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all text-sm" />
-               <Button onClick={() => { /* enviar datos o navegar */ setCurrentView('landing'); }} variant="primary" className="w-full">Iniciar Secuencia</Button>
+               <input type="text" placeholder="Email Corporativo" className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all text-sm" />
+               <Button onClick={() => setCurrentView('landing')} variant="primary" className="w-full">Iniciar Secuencia</Button>
                <Button onClick={() => setCurrentView('landing')} variant="ghost" className="w-full">Cancelar</Button>
             </div>
         </Card>
@@ -550,12 +563,12 @@ export default function App() {
             <p className="text-gray-500 mb-8 text-xs">Crea una cuenta para buscar licitaciones sin las herramientas de inteligencia.</p>
             <div className="space-y-3 text-left">
                <div>
-                 <label htmlFor="signup-email" className="block text-xs font-bold text-gray-700 mb-1">Email</label>
-                 <input id="signup-email" value={signupEmail} onChange={e => setSignupEmail(e.target.value)} type="email" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="tu@empresa.com" />
+                 <label className="block text-xs font-bold text-gray-700 mb-1">Email</label>
+                 <input type="email" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="tu@empresa.com" />
                </div>
                <div>
-                 <label htmlFor="signup-password" className="block text-xs font-bold text-gray-700 mb-1">Contraseña</label>
-                 <input id="signup-password" value={signupPassword} onChange={e => setSignupPassword(e.target.value)} type="password" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" />
+                 <label className="block text-xs font-bold text-gray-700 mb-1">Contraseña</label>
+                 <input type="password" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" />
                </div>
                <div className="pt-4">
                  <Button onClick={() => setCurrentView('search')} variant="secondary" className="w-full bg-gray-800 text-white hover:bg-gray-700 border-transparent">Crear Cuenta Gratuita</Button>
@@ -579,8 +592,6 @@ export default function App() {
              </div>
              <div className="flex-1 max-w-2xl relative">
                 <input 
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
                   type="text" 
                   placeholder="Buscar licitaciones (Ej: Computadores, Aseo, Construcción...)" 
                   className="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
@@ -589,7 +600,7 @@ export default function App() {
              </div>
            </div>
            <div className="flex items-center gap-4">
-             <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="py-1.5 text-xs h-8 px-4" ariaLabel="Desbloquear inteligencia">
+             <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="py-1.5 text-xs h-8 px-4">
                Desbloquear Inteligencia <Lock className="w-3 h-3 ml-1" />
              </Button>
              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold text-xs">
@@ -651,7 +662,7 @@ export default function App() {
               </div>
               <div className="flex flex-col items-end gap-2">
                  <div className="text-xl font-bold text-gray-900">$4.500.000</div>
-                 <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1" aria-label="Ver en Mercado Público">
+                 <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
                    Ver en Mercado Público <ArrowRight className="w-3 h-3" />
                  </button>
               </div>
@@ -672,7 +683,7 @@ export default function App() {
               </div>
               <div className="flex flex-col items-end gap-2">
                  <div className="text-xl font-bold text-gray-900">$12.000.000</div>
-                 <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1" aria-label="Ver en Mercado Público">
+                 <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
                    Ver en Mercado Público <ArrowRight className="w-3 h-3" />
                  </button>
               </div>
@@ -689,7 +700,7 @@ export default function App() {
                    <p className="text-sm text-blue-700">Estás viendo resultados sin el filtro de "Buenos Pagadores".</p>
                  </div>
               </div>
-              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="text-xs" ariaLabel="Ver análisis premium">
+              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="text-xs">
                 Ver Análisis Premium
               </Button>
            </div>
