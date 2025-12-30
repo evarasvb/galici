@@ -301,5 +301,7 @@ export default function App() {
               * Modelo Éxito: Paga solo si ganas durante el primer mes.
             </p>
           </div>
+        
+      </section>
 
           
