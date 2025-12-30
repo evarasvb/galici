@@ -296,6 +296,7 @@ export default function App() {
                   </div>
                 </Card>
               </div>
+                        </div>
             <p className="text-xs text-gray-500 mt-4 text-center lg:text-left font-medium">
               * Modelo Éxito: Paga solo si ganas durante el primer mes.
             </p>
