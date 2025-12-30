@@ -1,0 +1,2 @@
+# galici
+Software a Solution
