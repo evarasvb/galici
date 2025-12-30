@@ -4,88 +4,57 @@ import {
   FileText, 
   CheckCircle, 
   ArrowRight, 
-  Search, 
-  Briefcase, 
+  Search as SearchIcon, 
   ShieldCheck, 
-  Users, 
-  ChevronRight, 
-  ChevronLeft,
-  UploadCloud,
+  ChevronDown,
   Menu,
   X,
   Zap,
   Cpu,
-  AlertTriangle,
   Activity,
-  BarChart3,
-  Lock,
-  Globe,
-  Mail,
-  Phone,
-  Linkedin,
-  Twitter,
-  Facebook,
+  Layers,
   TrendingUp,
-  Clock,
-  DollarSign,
-  Package,
-  Monitor,
-  Wrench,
-  Lightbulb,
-  Home,
-  ShoppingBag,
+  Rocket,
+  Lock,
+  MessageSquare,
+  Database,
+  Wallet,
+  Crosshair,
   Filter,
-  Eye,
-  Edit3,
+  Clock,
+  Package,
   Armchair,      
   Utensils,      
   Stethoscope,   
   Sparkles,      
   Laptop,        
-  Printer,
-  Rocket,
-  HelpCircle,
-  ChevronDown,
-  MessageSquare,
-  Crosshair,
-  Database,
-  Wallet,
-  RefreshCw,
-  Layers,
-  Search as SearchIcon
 } from 'lucide-react';
 
-// --- Logo Galici "G+A Fusion" (Vector Oficial) ---
-const GaliciLogo = ({ className = "w-8 h-8", color = "#1e40af" }) => (
+// --- Nuevo Logo Galici "Simple & Social" (Tipo App) ---
+const GaliciLogo = ({ className = "w-8 h-8", color = "#1e40af", ariaLabel = 'Galici logo' }) => (
   <svg 
-    viewBox="0 0 300 160" 
+    role="img"
+    aria-label={ariaLabel}
+    viewBox="0 0 100 100" 
     className={className} 
     fill="none" 
     xmlns="http://www.w3.org/2000/svg"
   >
-    {/* Trazo 1: La estructura ascendente de la 'A' (Pico Afilado) */}
-    <path 
-      d="M 60 130 L 160 20 L 150 130" 
-      stroke={color} 
-      strokeWidth="14" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
+    <title>{ariaLabel}</title>
+    {/* Fondo Circular Sólido */}
+    <circle cx="50" cy="50" r="50" fill={color} />
     
-    {/* Trazo 2: El arco envolvente 'G' que cruza dinámicamente */}
+    {/* La 'g' estilizada en blanco (Negativo) */}
     <path 
-      d="M 20 110 C 100 60, 240 60, 280 110" 
-      stroke={color} 
-      strokeWidth="14" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
+      d="M50 25C36.19 25 25 36.19 25 50C25 63.81 36.19 75 50 75C61.05 75 70.31 67.84 73.75 57.81H50V46.88H84.06C84.69 48.75 85 50.78 85 53.13C85 67.97 70.47 80 50 80C33.43 80 20 66.57 20 50C20 33.43 33.43 20 50 20C57.66 20 64.38 22.81 69.69 27.81L62.34 35.16C59.53 32.5 55.47 30 50 30V25Z" 
+      fill="white" 
     />
   </svg>
 );
 
 // --- Componentes UI Clásicos (Clean Corporate) ---
 
-const Button = ({ children, onClick, variant = 'primary', className = '', type = 'button', disabled = false }) => {
+const Button = ({ children, onClick, variant = 'primary', className = '', type = 'button', disabled = false, ariaLabel }) => {
   const baseStyle = "px-6 py-3 rounded-md font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 text-sm shadow-sm";
   
   const variants = {
@@ -93,7 +62,8 @@ const Button = ({ children, onClick, variant = 'primary', className = '', type =
     secondary: "bg-white text-blue-900 border border-gray-200 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800",
     outline: "border-2 border-blue-800 text-blue-800 hover:bg-blue-50",
     ghost: "text-gray-600 hover:text-blue-800 hover:bg-gray-100",
-    white: "bg-white text-blue-900 hover:bg-blue-50 shadow-md"
+    white: "bg-white text-blue-900 hover:bg-blue-50 shadow-md",
+    search: "bg-blue-600 hover:bg-blue-700 text-white rounded-r-md rounded-l-none h-full"
   };
 
   return (
@@ -101,6 +71,7 @@ const Button = ({ children, onClick, variant = 'primary', className = '', type =
       type={type}
       onClick={onClick} 
       disabled={disabled}
+      aria-label={ariaLabel}
       className={`${baseStyle} ${variants[variant]} ${className}`}
     >
       {children}
@@ -125,7 +96,7 @@ const MetricCard = ({ label, value, trend, subLabel }) => (
     <div className="text-gray-500 text-[10px] font-bold uppercase tracking-wide mb-1">{label}</div>
     <div className="text-2xl font-extrabold text-gray-900 mb-1">{value}</div>
     {trend && (
-      <div className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${trend.includes('↓') ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
+      <div className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${trend.includes('↑') ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
         {trend}
       </div>
     )}
@@ -149,6 +120,7 @@ const FAQItem = ({ question, answer }) => {
       <button 
         className="w-full py-5 flex justify-between items-center text-left focus:outline-none group hover:bg-gray-50 px-2 rounded-lg transition-colors"
         onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
       >
         <span className={`text-sm font-bold transition-colors ${isOpen ? 'text-blue-700' : 'text-gray-700'}`}>
           {question}
@@ -184,7 +156,15 @@ export default function App() {
   const [currentView, setCurrentView] = useState('landing');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Controlled inputs state
+  const [onboardEmail, setOnboardEmail] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => { window.scrollTo(0, 0); }, [currentView]);
+
+  // --- Vistas ---
 
   const LandingPage = () => (
     <div className="min-h-screen font-sans bg-gray-50 text-gray-900 selection:bg-blue-100 selection:text-blue-900 overflow-x-hidden">
@@ -194,41 +174,37 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setCurrentView('landing')}>
-               <div className="bg-blue-50 p-2 rounded-lg border border-blue-100 group-hover:bg-blue-100 transition-colors">
-                  <GaliciLogo className="w-8 h-8" color="#1e40af" />
+               {/* Logo Simple tipo Facebook */}
+               <div className="transition-transform group-hover:scale-105">
+                  <GaliciLogo className="w-10 h-10" color="#1e40af" />
                </div>
-               <div className="flex flex-col">
-                <span className="font-extrabold text-xl text-blue-900 tracking-tight leading-none">GALICI</span>
-                <span className="text-[10px] text-gray-500 tracking-widest font-semibold uppercase">La Buena Venta</span>
-              </div>
+               <span className="font-extrabold text-2xl text-blue-900 tracking-tight leading-none">galici</span>
             </div>
             
             <div className="hidden md:flex items-center gap-8">
-              <a href="#logic" className="text-sm font-medium text-gray-600 hover:text-blue-800 transition-colors">Solución</a>
-              <a href="#features" className="text-sm font-medium text-gray-600 hover:text-blue-800 transition-colors">Motor</a>
+              <a href="#logic" className="text-sm font-medium text-gray-600 hover:text-blue-800 transition-colors">Estrategia</a>
+              <a href="#features" className="text-sm font-medium text-gray-600 hover:text-blue-800 transition-colors">IA Generativa</a>
               <div className="h-6 w-px bg-gray-300 mx-2"></div>
-              
-              {/* Botón de usuario gratuito */}
               <button 
                 onClick={() => setCurrentView('freeSignup')}
                 className="text-sm font-medium text-gray-500 hover:text-blue-800 transition-colors"
+                aria-label="Buscador Gratuito"
               >
                 Buscador Gratuito
               </button>
-
-              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="py-2.5">
-                Actualizar Motor
+              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="py-2.5" ariaLabel="Tomar el Control">
+                Tomar el Control
               </Button>
             </div>
 
-            <button className="md:hidden text-gray-600" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            <button className="md:hidden text-gray-600" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}>
               {mobileMenuOpen ? <X /> : <Menu />}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section - Enfoque Financiero */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden bg-white pt-20 pb-28">
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-blue-50 rounded-full blur-3xl opacity-60"></div>
         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[400px] h-[400px] bg-indigo-50 rounded-full blur-3xl opacity-60"></div>
@@ -236,61 +212,61 @@ export default function App() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8 animate-fade-in-up text-center lg:text-left z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 border border-green-200 rounded-full text-green-800 text-xs font-bold uppercase tracking-wide shadow-sm">
-              <RefreshCw className="w-3 h-3 fill-green-800" /> Rotación de caja optimizada
+              <TrendingUp className="w-3 h-3 fill-green-800" /> Impacto Directo en tu Última Línea
             </div>
             
             <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight tracking-tight">
-              Actualiza el motor <br/>
-              de tu negocio: <br/>
-              <span className="text-blue-700">Vende, cobra y repite.</span>
+              Adjudicar es clave. <br/>
+              Hacerlo constante <br/>
+              <span className="text-blue-700">es vital.</span>
             </h1>
             
             <p className="text-lg text-gray-600 max-w-lg mx-auto lg:mx-0 leading-relaxed">
-              La eficiencia administrativa es la bencina de tu motor. Galici automatiza el proceso repetitivo de postular —desde Compras Ágiles hasta Grandes Licitaciones— para que tu equipo se enfoque en cerrar el negocio.
+              Recupera las riendas de tu negocio. Tú defines la estrategia, <strong className="text-blue-800">Galici</strong> ejecuta con <strong>IA Generativa</strong> para escalar tus ventas y blindar tu caja vendiéndole solo a los que pagan.
             </p>
 
             <ul className="space-y-3 text-gray-700 font-medium">
               <li className="flex items-center gap-2 justify-center lg:justify-start">
-                <CheckCircle className="w-5 h-5 text-blue-600" /> Match con el producto más rentable
+                <CheckCircle className="w-5 h-5 text-blue-600" /> Automatización escalable con IA
               </li>
               <li className="flex items-center gap-2 justify-center lg:justify-start">
-                <CheckCircle className="w-5 h-5 text-blue-600" /> Reduce días de pago de 65 a 45 días
+                <CheckCircle className="w-5 h-5 text-blue-600" /> Sugerencia de mix rentable
               </li>
               <li className="flex items-center gap-2 justify-center lg:justify-start">
-                <CheckCircle className="w-5 h-5 text-blue-600" /> Automatización para mejorar la última línea
+                <CheckCircle className="w-5 h-5 text-blue-600" /> Venta segura a "Buenos Pagadores"
               </li>
             </ul>
             
             <div className="flex flex-col sm:flex-row gap-4 pt-6 justify-center lg:justify-start">
-              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="text-lg px-8 h-14 w-full sm:w-auto">
+              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="text-lg px-8 h-14 w-full sm:w-auto" ariaLabel="Actualizar motor">
                 ACTUALIZA TU MOTOR <Rocket className="w-5 h-5 ml-1" />
               </Button>
-              <Button onClick={() => setCurrentView('freeSignup')} variant="secondary" className="text-lg px-8 h-14 w-full sm:w-auto border-blue-100 bg-blue-50 text-blue-800">
+              <Button onClick={() => setCurrentView('freeSignup')} variant="secondary" className="text-lg px-8 h-14 w-full sm:w-auto border-blue-100 bg-blue-50 text-blue-800" ariaLabel="Buscador gratis">
                 Solo Buscar (Gratis)
               </Button>
             </div>
             <p className="text-xs text-gray-500 mt-4 text-center lg:text-left font-medium">
-              * Motor Galici: Comisión por éxito solo el primer mes.
+              * Modelo Éxito: Paga solo si ganas durante el primer mes.
             </p>
           </div>
 
-          {/* Hero Dashboard Graphic - Sincronización Financiera */}
+          {/* Hero Dashboard Graphic */}
           <div className="relative animate-fade-in-left">
              <div className="absolute -inset-1 bg-gradient-to-tr from-blue-100 to-indigo-100 rounded-2xl opacity-50 blur-xl"></div>
              <Card highlight className="relative p-6 bg-white/95 backdrop-blur shadow-2xl border-gray-100">
                <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
                  <div className="font-bold text-gray-900 flex items-center gap-2 uppercase tracking-wider text-sm">
-                   <Layers className="w-5 h-5 text-blue-700" /> Solución Integral
+                   <Layers className="w-5 h-5 text-blue-700" /> Estado de Resultados
                  </div>
                  <div className="text-[10px] bg-green-100 text-green-800 border border-green-200 px-2 py-1 rounded-full font-bold uppercase tracking-wider">
-                   Estado: Caja Azul
+                   Proyección: Óptima
                  </div>
                </div>
                <div className="grid grid-cols-2 gap-4">
-                  <MetricCard label="Días Pago Mercado" value="65 Días" trend="Promedio" subLabel="Sin gestión" />
-                  <MetricCard label="Días Pago Galici" value="45 Días" trend="↓ Real" subLabel="Con filtro de riesgo" />
-                  <MetricCard label="Capacidad Postulación" value="x10" trend="↑ 833%" subLabel="Motor actualizado" />
-                  <MetricCard label="Impacto Última Línea" value="+25%" trend="↑ Neto" subLabel="Utilidad pura" />
+                  <MetricCard label="Adjudicación Mensual" value="Constante" trend="Automático" subLabel="Escala x10" />
+                  <MetricCard label="Días de Cobro" value="45 Días" trend="↓ Eficiente" subLabel="Filtro Financiero" />
+                  <MetricCard label="Costo Operativo" value="-50%" trend="↓ Ahorro" subLabel="IA Generativa" />
+                  <MetricCard label="Impacto Última Línea" value="+25%" trend="↑ Neto" subLabel="Utilidad Real" />
                </div>
             </Card>
           </div>
@@ -300,41 +276,41 @@ export default function App() {
       {/* Logic / Strategy Section */}
       <section id="logic" className="bg-gray-50 py-24 border-y border-gray-200 relative">
         <div className="max-w-7xl mx-auto px-4 text-center mb-16 relative z-10">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Software Solution para tu Última Línea</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Inteligencia Generativa para tu Negocio</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Vamos directo al problema real. Sabemos que tus proveedores te exigen 30 días. <br/>
-            Galici alinea tu operación de ventas con tu realidad financiera.
+            La automatización no es solo velocidad, es estrategia. <br/>
+            Nuestra IA no solo postula, <strong>genera rentabilidad</strong> sugiriendo el mix perfecto.
           </p>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8 relative z-10">
           <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
             <div className="bg-blue-50 w-14 h-14 rounded-lg flex items-center justify-center mb-6 group-hover:bg-blue-100 transition-colors">
-              <Zap className="w-7 h-7 text-blue-600" />
+              <Cpu className="w-7 h-7 text-blue-600" />
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Eficiencia Administrativa</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">IA Generativa Escalable</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
-              El proceso de postular es repetitivo y consume recursos. Nuestra automatización es la pieza clave que inyecta velocidad y precisión a tu motor comercial.
+              Olvídate de copiar y pegar. Nuestra IA redacta documentos técnicos, justifica precios y arma ofertas complejas automáticamente, permitiéndote escalar sin contratar más personal.
             </p>
           </div>
 
           <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
             <div className="bg-indigo-50 w-14 h-14 rounded-lg flex items-center justify-center mb-6 group-hover:bg-indigo-100 transition-colors">
-              <ShieldCheck className="w-7 h-7 text-indigo-600" />
+              <Crosshair className="w-7 h-7 text-indigo-600" />
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">El Estándar Galici</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Estrategia en tus Manos</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
-              Identificamos a los organismos que pagan en plazos razonables (45 días promedio). Acortamos la brecha financiera para que tu rotación de dinero se mantenga en azul.
+              Te devolvemos el control. Tú defines los parámetros estratégicos (margen, zona, cliente ideal) y Galici se encarga de la ejecución táctica perfecta.
             </p>
           </div>
 
           <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
             <div className="bg-green-50 w-14 h-14 rounded-lg flex items-center justify-center mb-6 group-hover:bg-green-100 transition-colors">
-              <TrendingUp className="w-7 h-7 text-green-600" />
+              <Wallet className="w-7 h-7 text-green-600" />
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Impacto Real</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Rentabilidad Sugerida</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
-              Nuestras alertas protegen tu margen, pero nuestra automatización impacta directamente tu utilidad neta (última línea) al hacer más eficiente cada peso invertido en postular.
+              El sistema analiza millones de datos para sugerirte el <strong>mix de productos</strong> con mayor probabilidad de adjudicación y mejor margen. Vendemos inteligencia, no humo.
             </p>
           </div>
         </div>
@@ -345,10 +321,10 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <div className="inline-block px-4 py-1 bg-blue-50 border border-blue-100 text-blue-800 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
-              Tecnología Galici
+              Motor Galici v4.0
             </div>
-            <h2 className="text-3xl font-bold text-gray-900">¿Qué hace tu nuevo motor?</h2>
-            <p className="text-gray-600 mt-2">Funcionalidades diseñadas para la eficiencia financiera.</p>
+            <h2 className="text-3xl font-bold text-gray-900">Solución Integral para la Última Línea</h2>
+            <p className="text-gray-600 mt-2">Tecnología diseñada para impactar directamente en tu estado de resultados.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -356,9 +332,9 @@ export default function App() {
               <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
                 <Database className="w-6 h-6 text-blue-700" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-3">Match Rentable</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-3">Mix de Productos Óptimo</h3>
               <p className="text-sm text-gray-600 leading-relaxed">
-                No solo buscamos lo que puedes vender, sino lo que es más rentable vender. Priorizamos productos con mejor margen y rotación en el mercado público.
+                Nuestra IA cruza tu stock con la demanda histórica para sugerirte qué productos empujar. Rentabiliza tu inventario con decisiones basadas en datos.
               </p>
             </div>
             <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm hover:border-green-300 transition-colors">
@@ -367,16 +343,16 @@ export default function App() {
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-3">Interrogatorio de Bases</h3>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Nuestra IA lee la burocracia por ti. Extrae requisitos y plazos de pago en segundos. Ahorra tiempo administrativo valioso en cada postulación.
+                La IA Generativa lee y resume las bases por ti. Detecta trampas, requisitos ocultos y oportunidades en segundos. Tu equipo solo toma la decisión final.
               </p>
             </div>
             <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm hover:border-indigo-300 transition-colors">
               <div className="bg-indigo-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
-                <Wallet className="w-6 h-6 text-indigo-700" />
+                <ShieldCheck className="w-6 h-6 text-indigo-700" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-3">Radar de Solvencia</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-3">Filtro Financiero</h3>
               <p className="text-sm text-gray-600 leading-relaxed">
-                El sistema bloquea automáticamente oportunidades de organismos con mal historial de pago. Protegemos tu flujo de caja antes de que postules.
+                Bloqueamos a los malos pagadores. Aseguramos que cada peso vendido se transforme en un peso cobrado en tiempo récord (45 días promedio).
               </p>
             </div>
           </div>
@@ -389,13 +365,13 @@ export default function App() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Sectores de Alta Rotación</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Nuestro motor funciona mejor en rubros donde la velocidad y el stock son críticos.
+              Nuestro motor funciona mejor en rubros donde la velocidad, el stock y la rotación de caja son críticos.
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-16">
-            {PRODUCT_CATEGORIES.map((cat, i) => (
-              <div key={i} className="flex flex-col items-center p-6 bg-white border border-gray-200 rounded-xl hover:border-blue-400 hover:shadow-md transition-all duration-200 cursor-default group">
+            {PRODUCT_CATEGORIES.map((cat) => (
+              <div key={cat.name} className="flex flex-col items-center p-6 bg-white border border-gray-200 rounded-xl hover:border-blue-400 hover:shadow-md transition-all duration-200 cursor-default group">
                  <cat.icon className="w-8 h-8 text-blue-700 mb-4 group-hover:scale-110 transition-transform" />
                  <span className="text-xs font-bold text-gray-600 text-center uppercase tracking-wide group-hover:text-blue-900">{cat.name}</span>
               </div>
@@ -409,14 +385,14 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              El Efecto Multiplicador <br/> <span className="text-blue-700">en tu Última Línea</span>
+              El Aporte Brutal a tu <br/> <span className="text-blue-700">Estado de Resultados</span>
             </h2>
             <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-              No es magia, es eficiencia operativa. Al automatizar la búsqueda y creación de ofertas, reducimos drásticamente tu costo por postulación. Al ganar con mejores pagadores, disminuimos la presión sobre tu caja.
+              No es solo vender más, es vender mejor. Automatizando reducimos el Gasto de Administración y Ventas (GAV). Vendiendo a buenos pagadores reducimos el Costo Financiero. El resultado: una última línea mucho más saludable.
             </p>
             <div className="p-6 bg-blue-50 rounded-xl border-l-4 border-blue-700">
               <p className="font-medium text-blue-900 italic text-sm">
-                "Aumentamos marginalmente tu tasa de éxito, pero multiplicamos exponencialmente tus intentos ganadores focalizando los esfuerzos en los <span className="font-bold underline">pagadores eficientes</span>. Eso blinda tu caja de inmediato."
+                "Te devolvemos las riendas. Tú pones la estrategia, nosotros ponemos la inteligencia artificial y la ejecución constante."
               </p>
             </div>
           </div>
@@ -429,7 +405,7 @@ export default function App() {
               <div className="space-y-2">
                 <ComparisonItem label="Monto Adjudicado" before="$15M" after="$45M" change="+200%" />
                 <ComparisonItem label="Días Pago Real" before="65 días" after="45 días" change="-20 días" />
-                <ComparisonItem label="Tasa de Éxito" before="5%" after="7%" change="+40%" />
+                <ComparisonItem label="Eficiencia Admin" before="Baja" after="Alta" change="IA Generativa" />
                 <ComparisonItem label="Utilidad Neta" before="8%" after="14%" change="+75%" />
               </div>
             </Card>
@@ -447,20 +423,20 @@ export default function App() {
            
            <div className="space-y-2">
              <FAQItem 
-               question="¿Qué se considera un 'Buen Pagador' en el sistema?"
-               answer="Para Galici, un buen pagador es aquel organismo que tiene un historial de pago cercano a los 30-45 días. Esto es crítico para calzar con los plazos de tus propios proveedores."
-             />
-             <FAQItem 
                question="¿Cómo mejora Galici mi última línea?"
-               answer="De dos formas: 1) Eficiencia administrativa que reduce costos en el proceso repetitivo de postular. 2) Filtrado financiero que evita que asumas costos por intereses excesivos al cobrar tarde."
+               answer="Atacamos el estado de resultados por dos frentes: 1) Reducimos costos operativos automatizando la postulación con IA Generativa. 2) Mejoramos el flujo de caja filtrando a los malos pagadores, reduciendo costos financieros."
              />
              <FAQItem 
-               question="¿Puedo usar Galici si soy una PyME?"
-               answer="Absolutamente. De hecho, el motor es ideal para PyMEs que necesitan cuidar su flujo de caja y no tienen espaldas financieras para esperar pagos eternos."
+               question="¿Qué significa que 'me devuelven las riendas'?"
+               answer="Muchos proveedores se vuelven esclavos del proceso administrativo de postular. Con Galici, la IA hace el trabajo repetitivo, permitiéndote enfocarte en lo importante: la estrategia comercial y la definición de márgenes."
              />
              <FAQItem 
-               question="¿Qué alcance tiene el radar de licitaciones?"
-               answer="Cubrimos todo Mercado Público, desde Compras Ágiles (rápidas y tácticas) hasta Grandes Licitaciones, siempre aplicando el filtro de solvencia del comprador."
+               question="¿Qué hace la IA Generativa en el proceso?"
+               answer="No solo busca. Redacta, completa formularios, sugiere precios basados en históricos y genera la documentación necesaria para que tu postulación sea perfecta en minutos."
+             />
+             <FAQItem 
+               question="¿Puedo usar Galici solo como buscador?"
+               answer="Sí, tenemos un plan gratuito para búsquedas. Pero el verdadero valor está en el Motor de Adjudicación, que es el que impacta en tu rentabilidad."
              />
            </div>
          </div>
@@ -475,18 +451,18 @@ export default function App() {
             Lanzamiento v4.0
           </div>
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-8 tracking-tight">
-            ES HORA DE ACTUALIZAR TU MOTOR
+            TOMA EL CONTROL DE TUS VENTAS PÚBLICAS
           </h2>
           <p className="text-blue-100 text-lg mb-12 font-light max-w-2xl mx-auto">
-            Deja de vender para cobrar "algún día". Únete a los proveedores que ya operan con eficiencia financiera.
+            Deja que la IA haga el trabajo pesado. Tú ocúpate de la estrategia y de cobrar a tiempo.
           </p>
           
-          <Button onClick={() => setCurrentView('onboarding')} variant="white" className="text-lg px-12 h-16 w-full sm:w-auto font-bold text-blue-900 hover:bg-blue-50">
-            Actualizar Motor Ahora
+          <Button onClick={() => setCurrentView('onboarding')} variant="white" className="text-lg px-12 h-16 w-full sm:w-auto font-bold text-blue-900 hover:bg-blue-50" ariaLabel="Activar Motor Ahora">
+            Activar Motor Ahora
           </Button>
           
           <p className="text-xs text-blue-200 font-medium mt-6 tracking-wide opacity-80">
-            * Oferta de lanzamiento: Solo comisión por éxito el primer mes... luego vuelve a la tarifa normal.
+            * Oferta de lanzamiento: Solo comisión por éxito el primer mes.
           </p>
         </div>
       </section>
@@ -497,21 +473,22 @@ export default function App() {
           <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 mb-12">
              <div className="text-center md:text-left">
                 <div className="flex items-center justify-center md:justify-start gap-2 mb-4 group cursor-pointer">
-                   <div className="bg-blue-50 p-1.5 rounded border border-blue-100">
-                     <GaliciLogo className="w-6 h-6 text-blue-800" />
+                   {/* Logo Footer */}
+                   <div className="">
+                     <GaliciLogo className="w-8 h-8" color="#1e40af" />
                    </div>
-                   <span className="font-extrabold text-xl text-gray-800 tracking-tight">GALICI</span>
+                   <span className="font-extrabold text-xl text-gray-800 tracking-tight">galici</span>
                 </div>
-                <p className="text-xs max-w-xs">Software Solution para la rentabilidad pública.</p>
+                <p className="text-xs max-w-xs">Solución Integral de Software para la rentabilidad pública.</p>
              </div>
              
              <div className="flex gap-12 text-center md:text-left text-xs uppercase tracking-wider font-bold">
                <div>
                  <h4 className="text-gray-900 mb-4">Plataforma</h4>
                  <ul className="space-y-2">
-                   <li><a href="#" className="hover:text-blue-700 transition-colors">Tecnología</a></li>
+                   <li><a href="#" className="hover:text-blue-700 transition-colors">Tecnología IA</a></li>
                    <li><a href="#" className="hover:text-blue-700 transition-colors">Seguridad</a></li>
-                   <li><a href="#" className="hover:text-blue-700 transition-colors">Resultados</a></li>
+                   <li><a href="#" className="hover:text-blue-700 transition-colors">Rentabilidad</a></li>
                  </ul>
                </div>
                <div>
@@ -546,8 +523,9 @@ export default function App() {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Activar Motor</h2>
             <p className="text-gray-600 mb-8 text-sm">Déjanos tus coordenadas. Un agente de inteligencia se pondrá en contacto para configurar tu motor Galici.</p>
             <div className="space-y-3">
-               <input type="text" placeholder="Email Corporativo" className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all text-sm" />
-               <Button onClick={() => setCurrentView('landing')} variant="primary" className="w-full">Iniciar Secuencia</Button>
+               <label htmlFor="onboard-email" className="sr-only">Email Corporativo</label>
+               <input id="onboard-email" value={onboardEmail} onChange={e => setOnboardEmail(e.target.value)} type="text" placeholder="Email Corporativo" className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all text-sm" />
+               <Button onClick={() => { /* enviar datos o navegar */ setCurrentView('landing'); }} variant="primary" className="w-full">Iniciar Secuencia</Button>
                <Button onClick={() => setCurrentView('landing')} variant="ghost" className="w-full">Cancelar</Button>
             </div>
         </Card>
@@ -558,10 +536,10 @@ export default function App() {
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute top-6 left-6 cursor-pointer" onClick={() => setCurrentView('landing')}>
            <div className="flex items-center gap-2">
-             <div className="bg-blue-50 p-1.5 rounded border border-blue-100">
-                <GaliciLogo className="w-6 h-6 text-blue-800" />
+             <div className="transition-transform hover:scale-105">
+                <GaliciLogo className="w-8 h-8" color="#1e40af" />
              </div>
-             <span className="font-bold text-gray-800">GALICI</span>
+             <span className="font-bold text-gray-800">galici</span>
            </div>
         </div>
         <Card className="p-10 max-w-md w-full text-center relative z-10 shadow-lg border-gray-200 bg-white">
@@ -572,12 +550,12 @@ export default function App() {
             <p className="text-gray-500 mb-8 text-xs">Crea una cuenta para buscar licitaciones sin las herramientas de inteligencia.</p>
             <div className="space-y-3 text-left">
                <div>
-                 <label className="block text-xs font-bold text-gray-700 mb-1">Email</label>
-                 <input type="email" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="tu@empresa.com" />
+                 <label htmlFor="signup-email" className="block text-xs font-bold text-gray-700 mb-1">Email</label>
+                 <input id="signup-email" value={signupEmail} onChange={e => setSignupEmail(e.target.value)} type="email" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="tu@empresa.com" />
                </div>
                <div>
-                 <label className="block text-xs font-bold text-gray-700 mb-1">Contraseña</label>
-                 <input type="password" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" />
+                 <label htmlFor="signup-password" className="block text-xs font-bold text-gray-700 mb-1">Contraseña</label>
+                 <input id="signup-password" value={signupPassword} onChange={e => setSignupPassword(e.target.value)} type="password" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" />
                </div>
                <div className="pt-4">
                  <Button onClick={() => setCurrentView('search')} variant="secondary" className="w-full bg-gray-800 text-white hover:bg-gray-700 border-transparent">Crear Cuenta Gratuita</Button>
@@ -597,10 +575,12 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
            <div className="flex items-center gap-8 w-full">
              <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentView('landing')}>
-                <GaliciLogo className="w-6 h-6 text-blue-800" />
+                <GaliciLogo className="w-8 h-8" color="#1e40af" />
              </div>
              <div className="flex-1 max-w-2xl relative">
                 <input 
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
                   type="text" 
                   placeholder="Buscar licitaciones (Ej: Computadores, Aseo, Construcción...)" 
                   className="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
@@ -609,7 +589,7 @@ export default function App() {
              </div>
            </div>
            <div className="flex items-center gap-4">
-             <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="py-1.5 text-xs h-8 px-4">
+             <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="py-1.5 text-xs h-8 px-4" ariaLabel="Desbloquear inteligencia">
                Desbloquear Inteligencia <Lock className="w-3 h-3 ml-1" />
              </Button>
              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold text-xs">
@@ -671,7 +651,7 @@ export default function App() {
               </div>
               <div className="flex flex-col items-end gap-2">
                  <div className="text-xl font-bold text-gray-900">$4.500.000</div>
-                 <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+                 <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1" aria-label="Ver en Mercado Público">
                    Ver en Mercado Público <ArrowRight className="w-3 h-3" />
                  </button>
               </div>
@@ -692,7 +672,7 @@ export default function App() {
               </div>
               <div className="flex flex-col items-end gap-2">
                  <div className="text-xl font-bold text-gray-900">$12.000.000</div>
-                 <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+                 <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1" aria-label="Ver en Mercado Público">
                    Ver en Mercado Público <ArrowRight className="w-3 h-3" />
                  </button>
               </div>
@@ -709,7 +689,7 @@ export default function App() {
                    <p className="text-sm text-blue-700">Estás viendo resultados sin el filtro de "Buenos Pagadores".</p>
                  </div>
               </div>
-              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="text-xs">
+              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="text-xs" ariaLabel="Ver análisis premium">
                 Ver Análisis Premium
               </Button>
            </div>
