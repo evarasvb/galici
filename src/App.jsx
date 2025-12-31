@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './animations.css';
 
-// Logo Galici optimizado
+// Logo Galici Optimizado - SVG con tamaño fijo
 const GaliciLogo = ({ className = "w-8 h-8", color = "#1e40af" }) => (
-  <svg viewBox="0 0 100 100" className={className} fill="none">
-    <circle cx="50" cy="50" r="50" fill={color} />
-    <path d="M50 25C36.19 25 25 36.19 25 50C25 63.81 36.19 75 50 75C61.05 75 70.31 67.84 73.75 57.81H50V46.88H84.06C84.69 48.75 85 50.78 85 53.13C85 67.97 70.47 80 50 80C33.43 80 20 66.57 20 50C20 33.43 33.43 20 50 20C57.66 20 64.38 22.81 69.69 27.81L62.34 35.16C59.53 32.5 55.47 30 50 30V25Z" fill="white" />
+  <svg viewBox="0 0 300 160" width="32" height="32" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 60 130 L 160 20 L 150 130" stroke={color} strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M 20 110 C 100 60, 240 60, 280 110" stroke={color} strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 export default function App() {
+  const [currentView, setCurrentView] = useState('landing');
+
   return (
     <div className="min-h-screen font-sans bg-gray-50">
       {/* Navbar */}
@@ -33,7 +35,7 @@ export default function App() {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-50 to-white py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto animate-fade-in-up">
+          <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full text-green-800 text-sm font-bold mb-8">
               🚀 Automatización con IA Generativa
             </div>
@@ -44,12 +46,12 @@ export default function App() {
             </h1>
             
             <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
-              Multiplica x10 tus adjudicaciones en MercadoPublico con IA Generativa. 
+              Multiplica x10 tus adjudicaciones en MercadoPublico con IA Generativa. <br/>
               Automatiza, filtra buenos pagadores e impacta tu última línea.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-blue-800 text-white rounded-lg text-lg font-bold hover:bg-blue-900 shadow-lg hover-lift click-bounce">
+              <button className="px-8 py-4 bg-blue-800 text-white rounded-lg text-lg font-bold hover:bg-blue-900 shadow-lg">
                 Activar Motor Ahora 🔥
               </button>
               <button className="px-8 py-4 bg-white text-blue-800 border-2 border-blue-200 rounded-lg text-lg font-bold hover:bg-blue-50">
@@ -67,37 +69,37 @@ export default function App() {
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Inteligencia Generativa para tu Negocio</h2>
             <p className="text-xl text-gray-600">Automatización que impacta tu rentabilidad</p>
           </div>
-
+          
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-8 bg-white border border-gray-200 rounded-2xl hover:shadow-xl transition-shadow hover-lift">
+            <div className="p-8 bg-white border border-gray-200 rounded-2xl hover:shadow-xl transition-shadow">
               <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
                 🧠
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">IA Generativa Escalable</h3>
               <p className="text-gray-600">
-                Redacta documentos técnicos, justifica precios y arma ofertas complejas automáticamente. 
+                Redacta documentos técnicos, justifica precios y arma ofertas complejas automáticamente. <br/>
                 Escala sin contratar más personal.
               </p>
             </div>
-
-            <div className="p-8 bg-white border border-gray-200 rounded-2xl hover:shadow-xl transition-shadow hover-lift">
+            
+            <div className="p-8 bg-white border border-gray-200 rounded-2xl hover:shadow-xl transition-shadow">
               <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-6">
                 🎯
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Mix de Productos Óptimo</h3>
               <p className="text-gray-600">
-                Nuestra IA cruza tu stock con demanda histórica para sugerirte qué productos empujar. 
+                Nuestra IA cruza tu stock con demanda histórica para sugerirte qué productos empujar. <br/>
                 Rentabiliza tu inventario.
               </p>
             </div>
-
-            <div className="p-8 bg-white border border-gray-200 rounded-2xl hover:shadow-xl transition-shadow hover-lift">
+            
+            <div className="p-8 bg-white border border-gray-200 rounded-2xl hover:shadow-xl transition-shadow">
               <div className="w-14 h-14 bg-indigo-100 rounded-xl flex items-center justify-center mb-6">
                 🛡️
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Filtro Financiero</h3>
               <p className="text-gray-600">
-                Bloqueamos malos pagadores. Cada peso vendido se transforma en un peso cobrado 
+                Bloqueamos malos pagadores. Cada peso vendido se transforma en un peso cobrado <br/>
                 en 45 días promedio.
               </p>
             </div>
@@ -114,7 +116,7 @@ export default function App() {
                 El Aporte Brutal a tu <span className="text-blue-700">Estado de Resultados</span>
               </h2>
               <p className="text-xl text-gray-600 mb-8">
-                No es solo vender más, es vender mejor. Automatizando reducimos GAV. 
+                No es solo vender más, es vender mejor. Automatizando reducimos GAV. <br/>
                 Vendiendo a buenos pagadores reducimos costo financiero.
               </p>
               
@@ -133,7 +135,7 @@ export default function App() {
                 </div>
               </div>
             </div>
-
+            
             <div className="bg-gradient-to-br from-blue-100 to-indigo-100 p-8 rounded-2xl">
               <div className="bg-white p-6 rounded-xl shadow-lg">
                 <h3 className="text-lg font-bold text-gray-900 mb-4">📈 Proyección Financiera</h3>
@@ -170,7 +172,7 @@ export default function App() {
           <p className="text-xl text-blue-100 mb-10">
             Deja que la IA haga el trabajo pesado. Tú ocúpate de la estrategia y de cobrar a tiempo.
           </p>
-          <button className="px-12 py-5 bg-white text-blue-900 rounded-lg text-xl font-bold hover:bg-blue-50 shadow-2xl cta-glow click-bounce">
+          <button className="px-12 py-5 bg-white text-blue-900 rounded-lg text-xl font-bold hover:bg-blue-50 shadow-2xl">
             Activar Motor Ahora 🚀
           </button>
           <p className="text-sm text-blue-200 mt-6">
