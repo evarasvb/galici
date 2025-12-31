@@ -1,1063 +1,196 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Building2, 
-  FileText, 
-  CheckCircle, 
-  ArrowRight, 
-  Search, 
-  Briefcase, 
-  ShieldCheck, 
-  Users, 
-  ChevronRight, 
-  ChevronLeft,
-  UploadCloud,
-  Menu,
-  X,
-  Zap,
-  Cpu,
-  AlertTriangle,
-  Activity,
-  BarChart3,
-  Lock,
-  Globe,
-  Mail,
-  Phone,
-  Linkedin,
-  Twitter,
-  Facebook,
-  TrendingUp,
-  Clock,
-  DollarSign,
-  Package,
-  Monitor,
-  Wrench,
-  Lightbulb,
-  Home,
-  ShoppingBag,
-  Filter,
-  Eye,
-  Edit3,
-  Armchair,      
-  Utensils,      
-  Stethoscope,   
-  Sparkles,      
-  Laptop,        
-  Printer,
-  Rocket,
-  HelpCircle,
-  ChevronDown,
-  MessageSquare,
-  Crosshair,
-  Database,
-  Wallet,
-  RefreshCw,
-  Layers,
-  Search as SearchIcon,
-  BrainCircuit,
-  MessageCircle,
-  Send,
-  Loader2,
-  Wand2
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import './animations.css';
 
-// --- CONFIGURACIÓN GEMINI API ---
-const apiKey = ""; // La API Key se inyectará en tiempo de ejecución
-
-// Función auxiliar para llamar a Gemini
-const callGemini = async (prompt, systemInstruction = "", responseMimeType = "text/plain") => {
-  if (!apiKey) {
-    return new Promise(resolve => setTimeout(() => {
-      if (responseMimeType === "application/json") {
-        resolve(JSON.stringify(["Mobiliario", "Ergonomía"])); 
-      } else {
-        resolve("Nota: Configura la API Key para ver respuestas reales de Gemini. Esta es una respuesta simulada basada en el contexto de licitaciones.");
-      }
-    }, 1500));
-  }
-
-  try {
-    const payload = {
-      contents: [{ parts: [{ text: prompt }] }],
-      systemInstruction: { parts: [{ text: systemInstruction }] }
-    };
-
-    if (responseMimeType === "application/json") {
-      payload.generationConfig = { responseMimeType: "application/json" };
-    }
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      }
-    );
-
-    if (!response.ok) throw new Error("Error en la API de Gemini");
-
-    const data = await response.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-  } catch (error) {
-    console.error("Gemini API Error:", error);
-    return responseMimeType === "application/json" ? "[]" : "Hubo un error consultando a la inteligencia artificial.";
-  }
-};
-
-// --- Logo Galici "Simple & Social" (Tipo App - Solo G) ---
+// Logo Galici optimizado
 const GaliciLogo = ({ className = "w-8 h-8", color = "#1e40af" }) => (
-  <svg 
-    viewBox="0 0 100 100" 
-    className={className} 
-    fill="none" 
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {/* Fondo Circular Sólido */}
+  <svg viewBox="0 0 100 100" className={className} fill="none">
     <circle cx="50" cy="50" r="50" fill={color} />
-    
-    {/* La 'g' estilizada en blanco (Negativo) */}
-    <path 
-      d="M50 25C36.19 25 25 36.19 25 50C25 63.81 36.19 75 50 75C61.05 75 70.31 67.84 73.75 57.81H50V46.88H84.06C84.69 48.75 85 50.78 85 53.13C85 67.97 70.47 80 50 80C33.43 80 20 66.57 20 50C20 33.43 33.43 20 50 20C57.66 20 64.38 22.81 69.69 27.81L62.34 35.16C59.53 32.5 55.47 30 50 30V25Z" 
-      fill="white" 
-    />
+    <path d="M50 25C36.19 25 25 36.19 25 50C25 63.81 36.19 75 50 75C61.05 75 70.31 67.84 73.75 57.81H50V46.88H84.06C84.69 48.75 85 50.78 85 53.13C85 67.97 70.47 80 50 80C33.43 80 20 66.57 20 50C20 33.43 33.43 20 50 20C57.66 20 64.38 22.81 69.69 27.81L62.34 35.16C59.53 32.5 55.47 30 50 30V25Z" fill="white" />
   </svg>
 );
 
-// --- Componentes UI Clásicos (Clean Corporate) ---
-
-const Button = ({ children, onClick, variant = 'primary', className = '', type = 'button', disabled = false }) => {
-  const baseStyle = "px-6 py-3 rounded-md font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 text-sm shadow-sm";
-  
-  const variants = {
-    primary: "bg-blue-800 hover:bg-blue-900 text-white shadow-lg shadow-blue-900/20 border border-transparent hover:shadow-xl disabled:bg-gray-300 disabled:text-gray-500",
-    secondary: "bg-white text-blue-900 border border-gray-200 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800",
-    outline: "border-2 border-blue-800 text-blue-800 hover:bg-blue-50",
-    ghost: "text-gray-600 hover:text-blue-800 hover:bg-gray-100",
-    white: "bg-white text-blue-900 hover:bg-blue-50 shadow-md",
-    search: "bg-blue-600 hover:bg-blue-700 text-white rounded-r-md rounded-l-none h-full",
-    ai: "bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-md border-0"
-  };
-
-  return (
-    <button 
-      type={type}
-      onClick={onClick} 
-      disabled={disabled}
-      className={`${baseStyle} ${variants[variant]} ${className}`}
-    >
-      {children}
-    </button>
-  );
-};
-
-const Card = ({ children, className = '', highlight = false }) => (
-  <div className={`
-    bg-white rounded-xl border transition-all duration-300
-    ${highlight 
-      ? 'border-blue-200 shadow-[0_8px_30px_rgba(0,0,0,0.12)] ring-1 ring-blue-100' 
-      : 'border-gray-200 shadow-sm hover:shadow-md'} 
-    ${className}
-  `}>
-    {children}
-  </div>
-);
-
-const MetricCard = ({ label, value, trend, subLabel }) => (
-  <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col items-center text-center">
-    <div className="text-gray-500 text-[10px] font-bold uppercase tracking-wide mb-1">{label}</div>
-    <div className="text-2xl font-extrabold text-gray-900 mb-1">{value}</div>
-    {trend && (
-      <div className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${trend.includes('↓') ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
-        {trend}
-      </div>
-    )}
-    {subLabel && <div className="text-[10px] text-gray-400 mt-1">{subLabel}</div>}
-  </div>
-);
-
-const ComparisonItem = ({ label, before, after, change }) => (
-  <div className="flex justify-between items-center py-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 px-2 rounded-lg transition-colors">
-    <div className="font-medium text-gray-600 w-1/3 text-left text-sm">{label}</div>
-    <div className="text-gray-400 font-mono w-1/4 text-center line-through decoration-red-400 decoration-2 text-sm">{before}</div>
-    <div className="text-blue-900 font-bold font-mono w-1/4 text-center text-lg">{after}</div>
-    <div className="text-green-600 font-bold text-xs w-1/6 text-right bg-green-50 px-2 py-1 rounded-md">{change}</div>
-  </div>
-);
-
-const FAQItem = ({ question, answer }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <div className="border-b border-gray-200 last:border-0">
-      <button 
-        className="w-full py-5 flex justify-between items-center text-left focus:outline-none group hover:bg-gray-50 px-2 rounded-lg transition-colors"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span className={`text-sm font-bold transition-colors ${isOpen ? 'text-blue-700' : 'text-gray-700'}`}>
-          {question}
-        </span>
-        <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-blue-600' : ''}`} />
-      </button>
-      <div className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-48 opacity-100 pb-4' : 'max-h-0 opacity-0'}`}>
-        <p className="text-gray-600 text-sm leading-relaxed px-2">
-          {answer}
-        </p>
-      </div>
-    </div>
-  );
-};
-
-// --- Componente: Galici AI Chat Assistant ---
-const ChatAssistant = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    { role: 'system', text: 'Hola, soy el Asistente Galici. ¿En qué puedo ayudarte hoy con tus licitaciones?' }
-  ]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(scrollToBottom, [messages, isOpen]);
-
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    
-    const userMsg = { role: 'user', text: input };
-    setMessages(prev => [...prev, userMsg]);
-    setInput('');
-    setIsLoading(true);
-
-    const systemPrompt = "Eres un asistente experto en compras públicas de Chile (Mercado Público) y el software Galici. Responde de forma breve, estratégica y orientada a la rentabilidad del usuario. Evita respuestas muy largas.";
-    const responseText = await callGemini(input, systemPrompt);
-
-    setMessages(prev => [...prev, { role: 'system', text: responseText }]);
-    setIsLoading(false);
-  };
-
-  return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-      {/* Ventana de Chat */}
-      {isOpen && (
-        <div className="bg-white w-80 md:w-96 h-96 rounded-2xl shadow-2xl border border-gray-200 mb-4 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-10">
-          <div className="bg-blue-900 p-4 flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <div className="bg-white/20 p-1.5 rounded-full">
-                <BrainCircuit className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <h4 className="font-bold text-white text-sm">Asistente Galici</h4>
-                <p className="text-blue-200 text-xs flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span> En línea
-                </p>
-              </div>
-            </div>
-            <button onClick={() => setIsOpen(false)} className="text-white/80 hover:text-white">
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-          
-          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] rounded-2xl p-3 text-sm ${
-                  msg.role === 'user' 
-                    ? 'bg-blue-600 text-white rounded-br-none' 
-                    : 'bg-white text-gray-700 border border-gray-200 rounded-bl-none shadow-sm'
-                }`}>
-                  {msg.text}
-                </div>
-              </div>
-            ))}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-white p-3 rounded-2xl rounded-bl-none border border-gray-200 shadow-sm">
-                  <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          <div className="p-3 bg-white border-t border-gray-100 flex gap-2">
-            <input 
-              type="text" 
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Pregunta sobre licitaciones..."
-              className="flex-1 text-sm border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-            />
-            <button 
-              onClick={handleSend}
-              disabled={isLoading}
-              className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 disabled:bg-blue-300 transition-colors"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Botón Flotante */}
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className="bg-blue-700 hover:bg-blue-800 text-white p-4 rounded-full shadow-lg transition-transform hover:scale-110 flex items-center justify-center gap-2 group"
-      >
-        {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
-        {!isOpen && <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap text-sm font-bold pl-0 group-hover:pl-2">Asistente IA</span>}
-      </button>
-    </div>
-  );
-};
-
-// --- Categorías Solicitadas ---
-const PRODUCT_CATEGORIES = [
-  { name: "Artículos de Oficina", icon: FileText },
-  { name: "Insumos Computacionales", icon: Laptop },
-  { name: "Ergonomía", icon: Armchair },
-  { name: "Artículos de Aseo", icon: Sparkles },
-  { name: "Alimentos", icon: Utensils },
-  { name: "Insumos Médicos", icon: Stethoscope },
-  { name: "Menaje", icon: Package },
-  { name: "Electrodomésticos", icon: Zap },
-  { name: "Artículos de Tecnología", icon: Cpu },
-  { name: "Mobiliario", icon: Building2 }
-];
-
-// --- Componente Principal ---
-
 export default function App() {
-  const [currentView, setCurrentView] = useState('landing');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Estados del Onboarding
-  const [onboardingStep, setOnboardingStep] = useState(1);
-  const [formData, setFormData] = useState({
-    companyName: '', rut: '', email: '', categories: [], businessDescription: ''
-  });
-  const [isAnalyzingCategories, setIsAnalyzingCategories] = useState(false);
-
-  useEffect(() => { window.scrollTo(0, 0); }, [currentView, onboardingStep]);
-
-  // Función para auto-detectar categorías con IA
-  const handleAutoCategorize = async () => {
-    if (!formData.businessDescription.trim()) return;
-    
-    setIsAnalyzingCategories(true);
-    
-    const categoriesList = PRODUCT_CATEGORIES.map(c => c.name).join(", ");
-    const prompt = `La empresa se describe así: "${formData.businessDescription}".
-    De la siguiente lista de categorías: [${categoriesList}].
-    Selecciona las que mejor se ajusten. Responde SOLAMENTE con un Array JSON de strings con los nombres exactos. Ejemplo: ["Mobiliario", "Ergonomía"]. Si no hay coincidencia clara, devuelve [].`;
-
-    try {
-      const response = await callGemini(prompt, "Eres un asistente de clasificación comercial.", "application/json");
-      const matchedCategories = JSON.parse(response);
-      
-      if (Array.isArray(matchedCategories)) {
-        setFormData(prev => ({ ...prev, categories: matchedCategories }));
-      }
-    } catch (e) {
-      console.error("Error parsing categories", e);
-    } finally {
-      setIsAnalyzingCategories(false);
-    }
-  };
-
-  const handleCategoryToggle = (category) => {
-    setFormData(prev => {
-      const exists = prev.categories.includes(category);
-      return { ...prev, categories: exists ? prev.categories.filter(c => c !== category) : [...prev.categories, category] };
-    });
-  };
-
-  // --- Vistas ---
-
-  const LandingPage = () => (
-    <div className="min-h-screen font-sans bg-gray-50 text-gray-900 selection:bg-blue-100 selection:text-blue-900 overflow-x-hidden">
-      
-      {/* Navbar Corporativo */}
-      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm transition-all duration-300">
+  return (
+    <div className="min-h-screen font-sans bg-gray-50">
+      {/* Navbar */}
+      <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setCurrentView('landing')}>
-               {/* Logo Simple tipo Facebook */}
-               <div className="transition-transform group-hover:scale-105">
-                  <GaliciLogo className="w-10 h-10" color="#1e40af" />
-               </div>
-               <span className="font-extrabold text-2xl text-blue-900 tracking-tight leading-none">galici</span>
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center gap-3">
+              <GaliciLogo className="w-8 h-8" />
+              <span className="font-bold text-xl text-blue-900">galici</span>
             </div>
-            
-            <div className="hidden md:flex items-center gap-8">
-              <a href="#logic" className="text-sm font-medium text-gray-600 hover:text-blue-800 transition-colors">Estrategia</a>
-              <a href="#features" className="text-sm font-medium text-gray-600 hover:text-blue-800 transition-colors">IA Generativa</a>
-              <div className="h-6 w-px bg-gray-300 mx-2"></div>
-              
-              <button 
-                onClick={() => setCurrentView('freeSignup')}
-                className="text-sm font-medium text-gray-500 hover:text-blue-800 transition-colors"
-              >
-                Buscador Gratuito
+            <div className="flex items-center gap-4">
+              <a href="#features" className="text-sm font-medium text-gray-600 hover:text-blue-800">Características</a>
+              <button className="px-4 py-2 bg-blue-800 text-white rounded-lg text-sm font-semibold hover:bg-blue-900">
+                Comenzar
               </button>
-
-              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="py-2.5">
-                Tomar el Control
-              </Button>
             </div>
-
-            <button className="md:hidden text-gray-600" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X /> : <Menu />}
-            </button>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-white pt-20 pb-28">
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-blue-50 rounded-full blur-3xl opacity-60"></div>
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[400px] h-[400px] bg-indigo-50 rounded-full blur-3xl opacity-60"></div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center">
-          <div className="space-y-8 animate-fade-in-up text-center lg:text-left z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 border border-green-200 rounded-full text-green-800 text-xs font-bold uppercase tracking-wide shadow-sm">
-              <TrendingUp className="w-3 h-3 fill-green-800" /> Impacto Directo en tu Última Línea
+      <section className="relative bg-gradient-to-br from-blue-50 to-white py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-4xl mx-auto animate-fade-in-up">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full text-green-800 text-sm font-bold mb-8">
+              🚀 Automatización con IA Generativa
             </div>
             
-            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight tracking-tight">
+            <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
               Adjudicar es clave. <br/>
-              Hacerlo constante <br/>
-              <span className="text-blue-700">es vital.</span>
+              Hacerlo constante <span className="text-blue-700">es vital.</span>
             </h1>
             
-            <p className="text-lg text-gray-600 max-w-lg mx-auto lg:mx-0 leading-relaxed">
-              Recupera las riendas de tu negocio. Tú defines la estrategia, <strong className="text-blue-800">Galici</strong> ejecuta con <strong>IA Generativa</strong> para escalar tus ventas y blindar tu caja vendiéndole solo a los que pagan.
+            <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+              Multiplica x10 tus adjudicaciones en MercadoPublico con IA Generativa. 
+              Automatiza, filtra buenos pagadores e impacta tu última línea.
             </p>
-
-            <ul className="space-y-3 text-gray-700 font-medium">
-              <li className="flex items-center gap-2 justify-center lg:justify-start">
-                <CheckCircle className="w-5 h-5 text-blue-600" /> Automatización escalable con IA
-              </li>
-              <li className="flex items-center gap-2 justify-center lg:justify-start">
-                <CheckCircle className="w-5 h-5 text-blue-600" /> Sugerencia de mix rentable
-              </li>
-              <li className="flex items-center gap-2 justify-center lg:justify-start">
-                <CheckCircle className="w-5 h-5 text-blue-600" /> Venta segura a "Buenos Pagadores"
-              </li>
-            </ul>
             
-            <div className="flex flex-col sm:flex-row gap-4 pt-6 justify-center lg:justify-start">
-              <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="text-lg px-8 h-14 w-full sm:w-auto">
-                ACTUALIZA TU MOTOR <Rocket className="w-5 h-5 ml-1" />
-              </Button>
-              <Button onClick={() => setCurrentView('freeSignup')} variant="secondary" className="text-lg px-8 h-14 w-full sm:w-auto border-blue-100 bg-blue-50 text-blue-800">
-                Solo Buscar (Gratis)
-              </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="px-8 py-4 bg-blue-800 text-white rounded-lg text-lg font-bold hover:bg-blue-900 shadow-lg hover-lift click-bounce">
+                Activar Motor Ahora 🔥
+              </button>
+              <button className="px-8 py-4 bg-white text-blue-800 border-2 border-blue-200 rounded-lg text-lg font-bold hover:bg-blue-50">
+                Ver Demo
+              </button>
             </div>
-            <p className="text-xs text-gray-500 mt-4 text-center lg:text-left font-medium">
-              * Modelo Éxito: Paga solo si ganas durante el primer mes.
-            </p>
-          </div>
-
-          {/* Hero Dashboard Graphic */}
-          <div className="relative animate-fade-in-left">
-             <div className="absolute -inset-1 bg-gradient-to-tr from-blue-100 to-indigo-100 rounded-2xl opacity-50 blur-xl"></div>
-             <Card highlight className="relative p-6 bg-white/95 backdrop-blur shadow-2xl border-gray-100">
-               <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-                 <div className="font-bold text-gray-900 flex items-center gap-2 uppercase tracking-wider text-sm">
-                   <Layers className="w-5 h-5 text-blue-700" /> Estado de Resultados
-                 </div>
-                 <div className="text-[10px] bg-green-100 text-green-800 border border-green-200 px-2 py-1 rounded-full font-bold uppercase tracking-wider">
-                   Proyección: Óptima
-                 </div>
-               </div>
-               <div className="grid grid-cols-2 gap-4">
-                  <MetricCard label="Adjudicación Mensual" value="Constante" trend="Automático" subLabel="Escala x10" />
-                  <MetricCard label="Días de Cobro" value="45 Días" trend="↓ Eficiente" subLabel="Filtro Financiero" />
-                  <MetricCard label="Costo Operativo" value="-50%" trend="↓ Ahorro" subLabel="IA Generativa" />
-                  <MetricCard label="Impacto Última Línea" value="+25%" trend="↑ Neto" subLabel="Utilidad Real" />
-               </div>
-            </Card>
           </div>
         </div>
       </section>
 
-      {/* Logic / Strategy Section */}
-      <section id="logic" className="bg-gray-50 py-24 border-y border-gray-200 relative">
-        <div className="max-w-7xl mx-auto px-4 text-center mb-16 relative z-10">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Inteligencia Generativa para tu Negocio</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            La automatización no es solo velocidad, es estrategia. <br/>
-            Nuestra IA no solo postula, <strong>genera rentabilidad</strong> sugiriendo el mix perfecto.
-          </p>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8 relative z-10">
-          <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
-            <div className="bg-blue-50 w-14 h-14 rounded-lg flex items-center justify-center mb-6 group-hover:bg-blue-100 transition-colors">
-              <BrainCircuit className="w-7 h-7 text-blue-600" />
-            </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">IA Generativa Escalable</h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              Olvídate de copiar y pegar. Nuestra IA redacta documentos técnicos, justifica precios y arma ofertas complejas automáticamente, permitiéndote escalar sin contratar más personal.
-            </p>
-          </div>
-
-          <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
-            <div className="bg-indigo-50 w-14 h-14 rounded-lg flex items-center justify-center mb-6 group-hover:bg-indigo-100 transition-colors">
-              <Crosshair className="w-7 h-7 text-indigo-600" />
-            </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Estrategia en tus Manos</h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              Te devolvemos el control. Tú defines los parámetros estratégicos (margen, zona, cliente ideal) y Galici se encarga de la ejecución táctica perfecta.
-            </p>
-          </div>
-
-          <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
-            <div className="bg-green-50 w-14 h-14 rounded-lg flex items-center justify-center mb-6 group-hover:bg-green-100 transition-colors">
-              <Wallet className="w-7 h-7 text-green-600" />
-            </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Rentabilidad Sugerida</h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              El sistema analiza millones de datos para sugerirte el <strong>mix de productos</strong> con mayor probabilidad de adjudicación y mejor margen. Vendemos inteligencia, no humo.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Engine Features */}
+      {/* Features Section */}
       <section id="features" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-block px-4 py-1 bg-blue-50 border border-blue-100 text-blue-800 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
-              Motor Galici v4.0
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900">Solución Integral para la Última Línea</h2>
-            <p className="text-gray-600 mt-2">Tecnología diseñada para impactar directamente en tu estado de resultados.</p>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Inteligencia Generativa para tu Negocio</h2>
+            <p className="text-xl text-gray-600">Automatización que impacta tu rentabilidad</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm hover:border-blue-300 transition-colors">
-              <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
-                <Database className="w-6 h-6 text-blue-700" />
+            <div className="p-8 bg-white border border-gray-200 rounded-2xl hover:shadow-xl transition-shadow hover-lift">
+              <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
+                🧠
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-3">Mix de Productos Óptimo</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Nuestra IA cruza tu stock con la demanda histórica para sugerirte qué productos empujar. Rentabiliza tu inventario con decisiones basadas en datos.
+              <h3 className="text-xl font-bold text-gray-900 mb-3">IA Generativa Escalable</h3>
+              <p className="text-gray-600">
+                Redacta documentos técnicos, justifica precios y arma ofertas complejas automáticamente. 
+                Escala sin contratar más personal.
               </p>
             </div>
-            <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm hover:border-green-300 transition-colors">
-              <div className="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
-                <MessageSquare className="w-6 h-6 text-green-700" />
+
+            <div className="p-8 bg-white border border-gray-200 rounded-2xl hover:shadow-xl transition-shadow hover-lift">
+              <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-6">
+                🎯
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-3">Interrogatorio de Bases</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                La IA Generativa lee y resume las bases por ti. Detecta trampas, requisitos ocultos y oportunidades en segundos. Tu equipo solo toma la decisión final.
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Mix de Productos Óptimo</h3>
+              <p className="text-gray-600">
+                Nuestra IA cruza tu stock con demanda histórica para sugerirte qué productos empujar. 
+                Rentabiliza tu inventario.
               </p>
             </div>
-            <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm hover:border-indigo-300 transition-colors">
-              <div className="bg-indigo-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
-                <ShieldCheck className="w-6 h-6 text-indigo-700" />
+
+            <div className="p-8 bg-white border border-gray-200 rounded-2xl hover:shadow-xl transition-shadow hover-lift">
+              <div className="w-14 h-14 bg-indigo-100 rounded-xl flex items-center justify-center mb-6">
+                🛡️
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-3">Filtro Financiero</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Bloqueamos a los malos pagadores. Aseguramos que cada peso vendido se transforme en un peso cobrado en tiempo récord (45 días promedio).
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Filtro Financiero</h3>
+              <p className="text-gray-600">
+                Bloqueamos malos pagadores. Cada peso vendido se transforma en un peso cobrado 
+                en 45 días promedio.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Target Audience / Categories - Clean */}
-      <section id="target" className="py-24 bg-gray-50">
+      {/* Results Section */}
+      <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Sectores de Alta Rotación</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Nuestro motor funciona mejor en rubros donde la velocidad, el stock y la rotación de caja son críticos.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-16">
-            {PRODUCT_CATEGORIES.map((cat, i) => (
-              <div key={i} className="flex flex-col items-center p-6 bg-white border border-gray-200 rounded-xl hover:border-blue-400 hover:shadow-md transition-all duration-200 cursor-default group">
-                 <cat.icon className="w-8 h-8 text-blue-700 mb-4 group-hover:scale-110 transition-transform" />
-                 <span className="text-xs font-bold text-gray-600 text-center uppercase tracking-wide group-hover:text-blue-900">{cat.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Results / Metrics Comparison */}
-      <section id="results" className="py-24 bg-white border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              El Aporte Brutal a tu <br/> <span className="text-blue-700">Estado de Resultados</span>
-            </h2>
-            <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-              No es solo vender más, es vender mejor. Automatizando reducimos el Gasto de Administración y Ventas (GAV). Vendiendo a buenos pagadores reducimos el Costo Financiero. El resultado: una última línea mucho más saludable.
-            </p>
-            <div className="p-6 bg-blue-50 rounded-xl border-l-4 border-blue-700">
-              <p className="font-medium text-blue-900 italic text-sm">
-                "Te devolvemos las riendas. Tú pones la estrategia, nosotros ponemos la inteligencia artificial y la ejecución constante."
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                El Aporte Brutal a tu <span className="text-blue-700">Estado de Resultados</span>
+              </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                No es solo vender más, es vender mejor. Automatizando reducimos GAV. 
+                Vendiendo a buenos pagadores reducimos costo financiero.
               </p>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-gray-200">
+                  <div className="text-4xl font-bold text-blue-700">+200%</div>
+                  <div className="text-gray-600">Incremento en adjudicaciones mensuales</div>
+                </div>
+                <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-gray-200">
+                  <div className="text-4xl font-bold text-green-700">-20d</div>
+                  <div className="text-gray-600">Reducción en días de cobro promedio</div>
+                </div>
+                <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-gray-200">
+                  <div className="text-4xl font-bold text-indigo-700">+75%</div>
+                  <div className="text-gray-600">Mejora en utilidad neta</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-100 to-indigo-100 p-8 rounded-2xl">
+              <div className="bg-white p-6 rounded-xl shadow-lg">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">📈 Proyección Financiera</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                    <span className="text-gray-600">Ventas Mensuales</span>
+                    <span className="font-bold text-gray-900">$15M → $45M</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                    <span className="text-gray-600">Días de Cobro</span>
+                    <span className="font-bold text-green-600">65d → 45d</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                    <span className="text-gray-600">Costo Operativo</span>
+                    <span className="font-bold text-blue-600">-50%</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-blue-50 rounded border-2 border-blue-200">
+                    <span className="text-gray-900 font-bold">Impacto Última Línea</span>
+                    <span className="font-bold text-blue-700 text-xl">+25%</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          
-          <div>
-            <Card className="p-8 shadow-xl border-gray-200">
-              <h3 className="text-sm font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4 uppercase tracking-widest flex items-center gap-2">
-                <Activity className="w-4 h-4 text-green-600" /> Resultados del Motor V4.0
-              </h3>
-              <div className="space-y-2">
-                <ComparisonItem label="Monto Adjudicado" before="$15M" after="$45M" change="+200%" />
-                <ComparisonItem label="Días Pago Real" before="65 días" after="45 días" change="-20 días" />
-                <ComparisonItem label="Eficiencia Admin" before="Baja" after="Alta" change="IA Generativa" />
-                <ComparisonItem label="Utilidad Neta" before="8%" after="14%" change="+75%" />
-              </div>
-            </Card>
-          </div>
         </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-24 bg-gray-50 relative border-t border-gray-200">
-         <div className="max-w-3xl mx-auto px-4">
-           <div className="text-center mb-16">
-             <h2 className="text-3xl font-bold text-gray-900">Centro de Ayuda</h2>
-             <p className="text-gray-500 mt-2">Respuestas claras para decisiones inteligentes.</p>
-           </div>
-           
-           <div className="space-y-2">
-             <FAQItem 
-               question="¿Cómo mejora Galici mi última línea?"
-               answer="Atacamos el estado de resultados por dos frentes: 1) Reducimos costos operativos automatizando la postulación con IA Generativa. 2) Mejoramos el flujo de caja filtrando a los malos pagadores, reduciendo costos financieros."
-             />
-             <FAQItem 
-               question="¿Qué significa que 'me devuelven las riendas'?"
-               answer="Muchos proveedores se vuelven esclavos del proceso administrativo de postular. Con Galici, la IA hace el trabajo repetitivo, permitiéndote enfocarte en lo importante: la estrategia comercial y la definición de márgenes."
-             />
-             <FAQItem 
-               question="¿Qué hace la IA Generativa en el proceso?"
-               answer="No solo busca. Redacta, completa formularios, sugiere precios basados en históricos y genera la documentación necesaria para que tu postulación sea perfecta en minutos."
-             />
-             <FAQItem 
-               question="¿Puedo usar Galici solo como buscador?"
-               answer="Sí, tenemos un plan gratuito para búsquedas. Pero el verdadero valor está en el Motor de Adjudicación, que es el que impacta en tu rentabilidad."
-             />
-           </div>
-         </div>
       </section>
 
       {/* CTA Final */}
-      <section className="relative py-32 bg-blue-900 overflow-hidden text-center">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80')] opacity-10 bg-cover bg-center mix-blend-overlay"></div>
-        
-        <div className="relative max-w-4xl mx-auto px-4 z-10">
-          <div className="inline-block px-4 py-1 bg-blue-800 text-blue-100 rounded-full text-[10px] font-bold uppercase tracking-widest mb-6 border border-blue-700">
-            Lanzamiento v4.0
-          </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-8 tracking-tight">
+      <section className="py-24 bg-blue-900 text-white text-center">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
             TOMA EL CONTROL DE TUS VENTAS PÚBLICAS
           </h2>
-          <p className="text-blue-100 text-lg mb-12 font-light max-w-2xl mx-auto">
+          <p className="text-xl text-blue-100 mb-10">
             Deja que la IA haga el trabajo pesado. Tú ocúpate de la estrategia y de cobrar a tiempo.
           </p>
-          
-          <Button onClick={() => setCurrentView('onboarding')} variant="white" className="text-lg px-12 h-16 w-full sm:w-auto font-bold text-blue-900 hover:bg-blue-50">
-            Activar Motor Ahora
-          </Button>
-          
-          <p className="text-xs text-blue-200 font-medium mt-6 tracking-wide opacity-80">
-            * Oferta de lanzamiento: Solo comisión por éxito el primer mes.
+          <button className="px-12 py-5 bg-white text-blue-900 rounded-lg text-xl font-bold hover:bg-blue-50 shadow-2xl cta-glow click-bounce">
+            Activar Motor Ahora 🚀
+          </button>
+          <p className="text-sm text-blue-200 mt-6">
+            * Oferta de lanzamiento: Solo comisión por éxito el primer mes
           </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 pt-16 pb-8 text-gray-500">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 mb-12">
-             <div className="text-center md:text-left">
-                <div className="flex items-center justify-center md:justify-start gap-2 mb-4 group cursor-pointer">
-                   {/* Logo Footer */}
-                   <div className="">
-                     <GaliciLogo className="w-8 h-8" color="#1e40af" />
-                   </div>
-                   <span className="font-extrabold text-xl text-gray-800 tracking-tight">galici</span>
-                </div>
-                <p className="text-xs max-w-xs">Solución Integral de Software para la rentabilidad pública.</p>
-             </div>
-             
-             <div className="flex gap-12 text-center md:text-left text-xs uppercase tracking-wider font-bold">
-               <div>
-                 <h4 className="text-gray-900 mb-4">Plataforma</h4>
-                 <ul className="space-y-2">
-                   <li><a href="#" className="hover:text-blue-700 transition-colors">Tecnología IA</a></li>
-                   <li><a href="#" className="hover:text-blue-700 transition-colors">Seguridad</a></li>
-                   <li><a href="#" className="hover:text-blue-700 transition-colors">Rentabilidad</a></li>
-                 </ul>
-               </div>
-               <div>
-                 <h4 className="text-gray-900 mb-4">Legal</h4>
-                 <ul className="space-y-2">
-                   <li><a href="#" className="hover:text-blue-700 transition-colors">Términos</a></li>
-                   <li><a href="#" className="hover:text-blue-700 transition-colors">Privacidad</a></li>
-                 </ul>
-               </div>
-             </div>
-
-             <div className="text-center md:text-right">
-                <h4 className="text-gray-900 mb-4 text-xs uppercase tracking-wider font-bold">Contacto</h4>
-                <p className="text-sm mb-1 hover:text-blue-700 cursor-pointer transition-colors">contacto@galici.cl</p>
-             </div>
+      <footer className="bg-white border-t border-gray-200 py-12">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <GaliciLogo className="w-6 h-6" />
+            <span className="font-bold text-gray-800">galici</span>
           </div>
-          
-          <div className="border-t border-gray-200 pt-8 text-center text-[10px] uppercase tracking-widest text-gray-400">
+          <p className="text-sm text-gray-500">
             © 2025 Galici Intelligence. Todos los derechos reservados.
-          </div>
+          </p>
         </div>
       </footer>
-
-      {/* Componente Chat Assistant */}
-      <ChatAssistant />
-      
-      {/* Vistas adicionales */}
-      {currentView === 'onboarding' && <OnboardingWizard />}
-      {currentView === 'freeSignup' && <FreeSignup />}
-      {currentView === 'search' && <SearchEngine />}
     </div>
-  );
-
-  const OnboardingWizard = () => (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans items-center justify-center p-4 relative overflow-hidden">
-        <Card className="p-10 max-w-2xl w-full text-center relative z-10 shadow-xl border-gray-200 bg-white">
-            {onboardingStep === 1 && (
-              <>
-                <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Rocket className="w-8 h-8 text-blue-700" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Activar Motor</h2>
-                <p className="text-gray-600 mb-8 text-sm">Déjanos tus coordenadas. Un agente de inteligencia se pondrá en contacto para configurar tu motor Galici.</p>
-                <div className="space-y-4">
-                   <input 
-                     type="text" 
-                     placeholder="Email Corporativo" 
-                     className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all text-sm" 
-                     value={formData.email}
-                     onChange={(e) => setFormData({...formData, email: e.target.value})}
-                   />
-                   <Button onClick={() => setOnboardingStep(2)} variant="primary" className="w-full">Siguiente</Button>
-                   <Button onClick={() => setCurrentView('landing')} variant="ghost" className="w-full">Cancelar</Button>
-                </div>
-              </>
-            )}
-
-            {/* Step 2: Categorías con IA */}
-            {onboardingStep === 2 && (
-              <div className="text-left animate-in fade-in">
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="bg-purple-100 p-2 rounded-full"><BrainCircuit className="w-6 h-6 text-purple-600"/></div>
-                  <h2 className="text-xl font-bold text-gray-900">Categorización Inteligente</h2>
-                </div>
-                
-                <p className="text-sm text-gray-600 mb-4">
-                  Describe tu negocio brevemente y deja que nuestra IA seleccione los rubros perfectos para ti.
-                </p>
-
-                <div className="flex gap-2 mb-6">
-                  <input 
-                    type="text" 
-                    placeholder="Ej: Vendemos insumos de limpieza y aseo industrial para oficinas..." 
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:border-purple-500 outline-none"
-                    value={formData.businessDescription}
-                    onChange={(e) => setFormData({...formData, businessDescription: e.target.value})}
-                  />
-                  <button 
-                    onClick={handleAutoCategorize}
-                    disabled={isAnalyzingCategories}
-                    className="bg-purple-600 text-white px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 flex items-center gap-2 text-sm font-bold"
-                  >
-                    {isAnalyzingCategories ? <Loader2 className="w-4 h-4 animate-spin"/> : <Wand2 className="w-4 h-4"/>}
-                    Auto-Detectar
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto mb-6 pr-2">
-                  {PRODUCT_CATEGORIES.map((cat, i) => {
-                    const isSelected = formData.categories.includes(cat.name);
-                    return (
-                      <div 
-                        key={i} 
-                        onClick={() => handleCategoryToggle(cat.name)}
-                        className={`p-3 rounded-lg border cursor-pointer flex items-center justify-between text-xs transition-all ${isSelected ? 'border-blue-500 bg-blue-50 text-blue-900' : 'border-gray-200 hover:bg-gray-50'}`}
-                      >
-                        <span className="flex items-center gap-2">
-                          <cat.icon className={`w-4 h-4 ${isSelected ? 'text-blue-600' : 'text-gray-400'}`} />
-                          {cat.name}
-                        </span>
-                        {isSelected && <CheckCircle className="w-4 h-4 text-blue-600"/>}
-                      </div>
-                    )
-                  })}
-                </div>
-
-                <div className="flex justify-between pt-4 border-t border-gray-100">
-                   <Button onClick={() => setOnboardingStep(1)} variant="ghost" className="text-xs">Atrás</Button>
-                   <Button onClick={() => setCurrentView('landing')} variant="primary" className="text-xs">Finalizar Configuración</Button>
-                </div>
-              </div>
-            )}
-        </Card>
-    </div>
-  );
-
-  const FreeSignup = () => (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans items-center justify-center p-4 relative overflow-hidden">
-        <div className="absolute top-6 left-6 cursor-pointer" onClick={() => setCurrentView('landing')}>
-           <div className="flex items-center gap-2">
-             <div className="bg-blue-50 p-1.5 rounded border border-blue-100">
-                <GaliciLogo className="w-6 h-6 text-blue-800" />
-             </div>
-             <span className="font-bold text-gray-800">GALICI</span>
-           </div>
-        </div>
-        <Card className="p-10 max-w-md w-full text-center relative z-10 shadow-lg border-gray-200 bg-white">
-            <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <SearchIcon className="w-6 h-6 text-gray-600" />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Buscador Gratuito</h2>
-            <p className="text-gray-500 mb-8 text-xs">Crea una cuenta para buscar licitaciones sin las herramientas de inteligencia.</p>
-            <div className="space-y-3 text-left">
-               <div>
-                 <label className="block text-xs font-bold text-gray-700 mb-1">Email</label>
-                 <input type="email" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="tu@empresa.com" />
-               </div>
-               <div>
-                 <label className="block text-xs font-bold text-gray-700 mb-1">Contraseña</label>
-                 <input type="password" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" />
-               </div>
-               <div className="pt-4">
-                 <Button onClick={() => setCurrentView('search')} variant="secondary" className="w-full bg-gray-800 text-white hover:bg-gray-700 border-transparent">Crear Cuenta Gratuita</Button>
-               </div>
-            </div>
-            <div className="mt-6 border-t border-gray-100 pt-4">
-              <p className="text-xs text-gray-400">¿Buscas resultados reales? <span className="text-blue-600 font-bold cursor-pointer hover:underline" onClick={() => setCurrentView('onboarding')}>Activa el Motor</span></p>
-            </div>
-        </Card>
-    </div>
-  );
-
-  const SearchEngine = () => {
-    const [analysisState, setAnalysisState] = useState({});
-
-    const analyzeTender = async (id, title, amount) => {
-      setAnalysisState(prev => ({ ...prev, [id]: { loading: true, result: null } }));
-
-      const prompt = `Actúa como un experto en licitaciones públicas. Analiza brevemente la oportunidad: "${title}" con un monto de ${amount}. 
-      Dame 2 riesgos potenciales y 1 consejo estratégico clave en formato muy breve (máximo 2 líneas por punto).`;
-
-      const result = await callGemini(prompt, "Experto en compras públicas.");
-
-      setAnalysisState(prev => ({ ...prev, [id]: { loading: false, result: result } }));
-    };
-
-    return (
-      <div className="min-h-screen bg-gray-50 font-sans flex flex-col">
-        {/* Header Search */}
-        <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-             <div className="flex items-center gap-8 w-full">
-               <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentView('landing')}>
-                  <GaliciLogo className="w-6 h-6 text-blue-800" />
-               </div>
-               <div className="flex-1 max-w-2xl relative">
-                  <input 
-                    type="text" 
-                    placeholder="Buscar licitaciones (Ej: Computadores, Aseo, Construcción...)" 
-                    className="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-                  />
-                  <SearchIcon className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-               </div>
-             </div>
-             <div className="flex items-center gap-4">
-               <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="py-1.5 text-xs h-8 px-4">
-                 Desbloquear Inteligencia <Lock className="w-3 h-3 ml-1" />
-               </Button>
-               <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold text-xs">
-                 TU
-               </div>
-             </div>
-          </div>
-        </div>
-
-        <div className="flex-1 max-w-7xl mx-auto w-full px-4 py-8 grid grid-cols-12 gap-8">
-          {/* Sidebar Filters */}
-          <div className="col-span-3 space-y-6">
-             <div>
-               <h3 className="text-xs font-bold text-gray-900 uppercase mb-3 flex items-center gap-2"><Filter className="w-3 h-3"/> Filtros</h3>
-               <div className="space-y-2">
-                 {['Región Metropolitana', 'Valparaíso', 'Biobío', 'Antofagasta'].map(r => (
-                   <label key={r} className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
-                     <input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500" /> {r}
-                   </label>
-                 ))}
-               </div>
-             </div>
-             <div className="border-t border-gray-200 pt-6">
-               <h3 className="text-xs font-bold text-gray-900 uppercase mb-3">Rubro</h3>
-               <div className="space-y-2">
-                 {['Tecnología', 'Mobiliario', 'Aseo', 'Construcción'].map(r => (
-                   <label key={r} className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
-                     <input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500" /> {r}
-                   </label>
-                 ))}
-               </div>
-             </div>
-             
-             {/* Premium Filter Teaser */}
-             <div className="bg-gray-100 rounded-lg p-4 border border-gray-200 opacity-70 relative overflow-hidden">
-                <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] flex items-center justify-center z-10">
-                  <Lock className="w-5 h-5 text-gray-400" />
-                </div>
-                <h3 className="text-xs font-bold text-gray-400 uppercase mb-2">Filtro de Riesgo</h3>
-                <div className="h-2 bg-gray-200 rounded mb-2 w-3/4"></div>
-                <div className="h-2 bg-gray-200 rounded w-1/2"></div>
-             </div>
-          </div>
-
-          {/* Results */}
-          <div className="col-span-9 space-y-4">
-             {/* Result Card 1 */}
-             <Card className="p-5 flex flex-col gap-4 hover:border-blue-300 transition-colors group">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Compra Ágil</span>
-                      <span className="text-gray-400 text-xs">ID: 4561-23-LQ24</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-700">Adquisición de Equipamiento Informático</h3>
-                    <div className="text-sm text-gray-600 mb-2 flex items-center gap-4">
-                      <span className="flex items-center gap-1"><Building2 className="w-3 h-3"/> Servicio de Salud Metropolitano</span>
-                      <span className="flex items-center gap-1"><Clock className="w-3 h-3"/> Cierra en 2 días</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-2">
-                     <div className="text-xl font-bold text-gray-900">$4.500.000</div>
-                     <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
-                       Ver en Mercado Público <ArrowRight className="w-3 h-3" />
-                     </button>
-                  </div>
-                </div>
-                
-                {/* Botón de Análisis IA */}
-                <div className="border-t border-gray-100 pt-3 flex flex-col gap-3">
-                   {!analysisState['card1'] ? (
-                     <button 
-                       onClick={() => analyzeTender('card1', 'Adquisición de Equipamiento Informático', '$4.500.000')}
-                       className="self-start text-xs font-bold text-purple-600 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-full flex items-center gap-1 transition-colors"
-                     >
-                       <Sparkles className="w-3 h-3" /> Analizar con IA
-                     </button>
-                   ) : (
-                     <div className="bg-purple-50 rounded-lg p-3 text-xs text-gray-700 animate-in fade-in">
-                        {analysisState['card1'].loading ? (
-                          <div className="flex items-center gap-2 text-purple-700">
-                            <Loader2 className="w-3 h-3 animate-spin" /> Analizando bases...
-                          </div>
-                        ) : (
-                          <div className="space-y-2">
-                            <h4 className="font-bold text-purple-800 flex items-center gap-1"><BrainCircuit className="w-3 h-3"/> Análisis Galici:</h4>
-                            <p className="whitespace-pre-line">{analysisState['card1'].result}</p>
-                          </div>
-                        )}
-                     </div>
-                   )}
-                </div>
-             </Card>
-
-             {/* Result Card 2 */}
-             <Card className="p-5 flex flex-col gap-4 hover:border-blue-300 transition-colors group">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">L1</span>
-                      <span className="text-gray-400 text-xs">ID: 2210-55-LE24</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-700">Servicio de Mantención de Mobiliario</h3>
-                    <div className="text-sm text-gray-600 mb-2 flex items-center gap-4">
-                      <span className="flex items-center gap-1"><Building2 className="w-3 h-3"/> Municipalidad de Providencia</span>
-                      <span className="flex items-center gap-1"><Clock className="w-3 h-3"/> Cierra en 5 días</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-2">
-                     <div className="text-xl font-bold text-gray-900">$12.000.000</div>
-                     <button className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
-                       Ver en Mercado Público <ArrowRight className="w-3 h-3" />
-                     </button>
-                  </div>
-                </div>
-
-                {/* Botón de Análisis IA */}
-                <div className="border-t border-gray-100 pt-3 flex flex-col gap-3">
-                   {!analysisState['card2'] ? (
-                     <button 
-                       onClick={() => analyzeTender('card2', 'Servicio de Mantención de Mobiliario', '$12.000.000')}
-                       className="self-start text-xs font-bold text-purple-600 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-full flex items-center gap-1 transition-colors"
-                     >
-                       <Sparkles className="w-3 h-3" /> Analizar con IA
-                     </button>
-                   ) : (
-                     <div className="bg-purple-50 rounded-lg p-3 text-xs text-gray-700 animate-in fade-in">
-                        {analysisState['card2'].loading ? (
-                          <div className="flex items-center gap-2 text-purple-700">
-                            <Loader2 className="w-3 h-3 animate-spin" /> Analizando bases...
-                          </div>
-                        ) : (
-                          <div className="space-y-2">
-                            <h4 className="font-bold text-purple-800 flex items-center gap-1"><BrainCircuit className="w-3 h-3"/> Análisis Galici:</h4>
-                            <p className="whitespace-pre-line">{analysisState['card2'].result}</p>
-                          </div>
-                        )}
-                     </div>
-                   )}
-                </div>
-             </Card>
-
-             {/* Locked Feature Teaser in Results */}
-             <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                   <div className="bg-blue-100 p-3 rounded-full">
-                     <ShieldCheck className="w-6 h-6 text-blue-600" />
-                   </div>
-                   <div>
-                     <h4 className="font-bold text-blue-900">Análisis de Riesgo Bloqueado</h4>
-                     <p className="text-sm text-blue-700">Estás viendo resultados sin el filtro de "Buenos Pagadores".</p>
-                   </div>
-                </div>
-                <Button onClick={() => setCurrentView('onboarding')} variant="primary" className="text-xs">
-                  Ver Análisis Premium
-                </Button>
-             </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <>
-      {currentView === 'landing' && <LandingPage />}
-      {currentView === 'onboarding' && <OnboardingWizard />}
-      {currentView === 'freeSignup' && <FreeSignup />}
-      {currentView === 'search' && <SearchEngine />}
-      
-      {/* El Chatbot está disponible en todas las vistas */}
-      <ChatAssistant />
-    </>
   );
 }
