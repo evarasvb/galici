@@ -70,7 +70,7 @@ import {
   Scale,
   Gavel, 
   Languages,
-  Handshake, // Icono para Alianzas (UTP)
+  UserPlus, // Icono para Alianzas (UTP)
   ShoppingCart // Icono para Cotización Proveedores
 } from 'lucide-react';
 
@@ -1323,7 +1323,7 @@ export default function App() {
                           onClick={() => suggestPartnership('card1', 'Adquisición de Equipamiento Informático', '$4.500.000')}
                           className="text-xs font-bold text-violet-600 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-full flex items-center gap-1 transition-colors"
                         >
-                          <Handshake className="w-3 h-3" /> Buscar Alianza (UTP)
+                          <UserPlus className="w-3 h-3" /> Buscar Alianza (UTP)
                         </button>
                         <button 
                           onClick={() => draftSupplierEmail('card1', 'Adquisición de Equipamiento Informático', '$4.500.000')}
@@ -1392,7 +1392,7 @@ export default function App() {
                                analysisState['card1'].type === 'fines' ? <AlertTriangle className="w-3 h-3"/> : 
                                analysisState['card1'].type === 'defense' ? <Gavel className="w-3 h-3"/> :
                                analysisState['card1'].type === 'legal' ? <Languages className="w-3 h-3"/> : 
-                               analysisState['card1'].type === 'partnership' ? <Handshake className="w-3 h-3"/> :
+                               analysisState['card1'].type === 'partnership' ? <UserPlus className="w-3 h-3"/> :
                                analysisState['card1'].type === 'supplierEmail' ? <ShoppingCart className="w-3 h-3"/> : <FileText className="w-3 h-3"/>} 
                               
                               {analysisState['card1'].type === 'risk' ? 'Análisis de Riesgo:' : 
@@ -1548,7 +1548,7 @@ export default function App() {
                           onClick={() => suggestPartnership('card2', 'Servicio de Mantención de Mobiliario', '$12.000.000')}
                           className="text-xs font-bold text-violet-600 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-full flex items-center gap-1 transition-colors"
                         >
-                          <Handshake className="w-3 h-3" /> Buscar Alianza (UTP)
+                          <UserPlus className="w-3 h-3" /> Buscar Alianza (UTP)
                         </button>
                         <button 
                           onClick={() => draftSupplierEmail('card2', 'Servicio de Mantención de Mobiliario', '$12.000.000')}
