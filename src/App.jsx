@@ -58,7 +58,7 @@ import {
   Send,
   Loader2,
   Wand2,
-  FilePen,
+  Edit3,
   HelpCircle as QuestionIcon,
   ClipboardList,
   Calendar,
@@ -1288,7 +1288,7 @@ export default function App() {
                           onClick={() => draftProposal('card1', 'Adquisición de Equipamiento Informático', '$4.500.000')}
                           className="text-xs font-bold text-green-600 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-full flex items-center gap-1 transition-colors"
                         >
-                          <FilePen className="w-3 h-3" /> Redactar Propuesta
+                          <Edit3 className="w-3 h-3" /> Redactar Propuesta
                         </button>
                         <button 
                           onClick={() => generateCoverLetter('card1', 'Adquisición de Equipamiento Informático', '$4.500.000')}
@@ -1513,7 +1513,7 @@ export default function App() {
                           onClick={() => draftProposal('card2', 'Servicio de Mantención de Mobiliario', '$12.000.000')}
                           className="text-xs font-bold text-green-600 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-full flex items-center gap-1 transition-colors"
                         >
-                          <FilePen className="w-3 h-3" /> Redactar Propuesta
+                          <Edit3 className="w-3 h-3" /> Redactar Propuesta
                         </button>
                         <button 
                           onClick={() => generateCoverLetter('card2', 'Servicio de Mantención de Mobiliario', '$12.000.000')}
