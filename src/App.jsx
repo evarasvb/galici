@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './animations.css';
+import OpportunityView from './OpportunityView';
 
 // Logo Galici Optimizado - SVG con tamaño fijo
 const GaliciLogo = ({ className = "w-8 h-8", color = "#1e40af" }) => (
@@ -181,7 +182,19 @@ export default function App() {
         </div>
       </section>
 
-      {/* Footer */}
+      
+      
+            {/* Demo OpportunityView Section */}
+      <section id="opportunity-demo" className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Vista de Oportunidad</h2>
+            <p className="text-xl text-gray-600">Ejemplo de cómo luciría una oportunidad con el nuevo diseño</p>
+          </div>
+          <OpportunityView />
+        </div>
+      </section>
+{/* Footer */}
       <footer className="bg-white border-t border-gray-200 py-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
